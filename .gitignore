@@ -1,3 +1,9 @@
+# Vs Code
+.vscode
+launch.json
+tasks.json
+task.json
+
 # Prerequisites
 *.d
 
