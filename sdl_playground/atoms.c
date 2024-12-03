@@ -10,7 +10,8 @@
 #include "sdl_playground.h"
 #include "array.h"
 
-// pro fonty #include <SDL2>
+#include <SDL2/SDL_ttf.h>
+
 
 
 #define WINDOW_WIDTH 800
@@ -34,6 +35,16 @@ int main() {
 
     SDL_Event e;
     bool quit = false;
+    TTF_lnit();
+    TTF_Font *sans = TTF_OpenFont( "Anonymous.ttf", 10);
+    assert( sans );
+    int score = 0;
+    char score_text[80];
+
+    SDL_Rect score_rect = {.x = WINDOW_WIDTH / 2 -50, .y = 50, .w = 30, .h = 10};
+
+//    if  (SDL_HasIntersection(&pointer, &pointer2))
+
 
     while ( !quit ) {
         while ( SDL_PollEvent( &e ) ) {
