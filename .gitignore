@@ -4,6 +4,9 @@ launch.json
 tasks.json
 task.json
 
+# Cmake
+build
+
 # Prerequisites
 *.d
 
