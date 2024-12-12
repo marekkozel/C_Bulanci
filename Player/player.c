@@ -13,6 +13,7 @@
 
 void init_players(Players *players)
 {
+
     players->count_players = 0;
     players->players = (Player *)malloc(4 * sizeof(Player) * 2);
 }
@@ -46,15 +47,15 @@ void init_player(Player *player, SDL_Context *window, int id)
     set_player_velovity_y(player, 0);
     set_player_velovity_x(player, 0);
 
-    SDL_Rect dest;
+    SDL_Rect *dest = (SDL_Rect *)malloc(sizeof(SDL_Rect));
 
-    SDL_QueryTexture(player->texture, NULL, NULL, &dest.w, &dest.h);
-    dest.w *= 5;
-    dest.h *= 5;
-    dest.x = 500;
-    dest.y = 500;
+    SDL_QueryTexture(player->texture, NULL, NULL, &dest->w, &dest->h);
+    dest->w *= 5;
+    dest->h *= 5;
+    dest->x = 500;
+    dest->y = 500;
 
-    set_player_rectangle(player, &dest);
+    set_player_rectangle(player, dest);
 }
 
 void move_player(Player *player)
