@@ -12,32 +12,62 @@
 
 int main()
 {
+    Uint64 NOW = SDL_GetPerformanceCounter();
+    Uint64 LAST = 0;
+    double deltaTime = 0;
 
     SDL_Context window = sdl_window_setup();
 
     Players players;
     init_players(&players);
 
-    Player player;
-    init_player(&player, &window, 0);
+    SDL_Texture *tex_orange = IMG_LoadTexture(window.renderer, "/home/marek/C_Bulanci/Player/orange_bulanek.png");
+    if (!tex_orange)
+    {
+        printf("error creating texture: %s\n", SDL_GetError());
+        sdl_context_free(&window);
+        return;
+    }
+    SDL_Texture *tex_green = IMG_LoadTexture(window.renderer, "/home/marek/C_Bulanci/Player/green_bulanek.png");
+    if (!tex_green)
+    {
+        printf("error creating texture: %s\n", SDL_GetError());
+        sdl_context_free(&window);
+        return;
+    }
 
-    add_player(&players, &player);
+    Player player1;
+    init_player(&player1, &window, 0, tex_green);
+
+    add_player(&players, &player1);
+
+    Player player2;
+    init_player(&player2, &window, 1, tex_orange);
+
+    add_player(&players, &player2);
 
     int *close_request = (int *)malloc(sizeof(int));
     *close_request = 0;
 
     while (!*close_request)
     {
-        // SDL_RenderClear(window.renderer);
+        LAST = NOW;
+        NOW = SDL_GetPerformanceCounter();
 
-        SDL_RenderCopy(window.renderer, players.players[0].texture, NULL, players.players[0].rectangle);
-        SDL_RenderPresent(window.renderer);
+        deltaTime = (double)((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
+
+        SDL_RenderClear(window.renderer);
 
         read_keys(close_request, &window, &players);
 
-        // SDL_RenderPresent(window.renderer);
+        for (int i = 0; i < players.count_players; i++)
+        {
+            move_player(&players.players[i], deltaTime, &players);
 
-        SDL_Delay(1000 / 60);
+            SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, players.players[i].rectangle);
+        }
+
+        SDL_RenderPresent(window.renderer);
     }
 
     sdl_context_free(&window);
