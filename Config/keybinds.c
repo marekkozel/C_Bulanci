@@ -53,38 +53,50 @@ void read_keys(int *close_request, SDL_Context *window, Players *players)
                 break;
             }
             case SDL_SCANCODE_W:
-                printf("velocity: %f\n", player1->velocity_y);
                 set_player_friction_y(player1, 0);
                 set_player_velovity_y(player1, -PLAYER_SPEED);
-                printf("nwe_velocity: %f\n", player1->velocity_y);
+                set_player_friction_x(player1, FRICTION);
+
                 break;
             case SDL_SCANCODE_UP:
                 set_player_friction_y(player2, 0);
                 set_player_velovity_y(player2, -PLAYER_SPEED);
+                set_player_friction_x(player2, FRICTION);
+
                 break;
             case SDL_SCANCODE_A:
                 set_player_friction_x(player1, 0);
                 set_player_velovity_x(player1, -PLAYER_SPEED);
+                set_player_friction_y(player1, FRICTION);
                 break;
             case SDL_SCANCODE_LEFT:
                 set_player_friction_x(player2, 0);
                 set_player_velovity_x(player2, -PLAYER_SPEED);
+                set_player_friction_y(player2, FRICTION);
                 break;
             case SDL_SCANCODE_S:
                 set_player_friction_y(player1, 0);
                 set_player_velovity_y(player1, PLAYER_SPEED);
+                set_player_friction_x(player1, FRICTION);
+
                 break;
             case SDL_SCANCODE_DOWN:
                 set_player_friction_y(player2, 0);
                 set_player_velovity_y(player2, PLAYER_SPEED);
+                set_player_friction_x(player2, FRICTION);
+
                 break;
             case SDL_SCANCODE_D:
                 set_player_friction_x(player1, 0);
                 set_player_velovity_x(player1, PLAYER_SPEED);
+                set_player_friction_y(player1, FRICTION);
+
                 break;
             case SDL_SCANCODE_RIGHT:
                 set_player_friction_x(player2, 0);
                 set_player_velovity_x(player2, PLAYER_SPEED);
+                set_player_friction_y(player2, FRICTION);
+
                 break;
             }
             break;

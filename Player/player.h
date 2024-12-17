@@ -4,7 +4,7 @@
 #include "Config/sdl.h"
 
 #define PLAYER_SPEED (450)
-#define FRICTION (100)
+#define FRICTION (150)
 
 typedef struct
 {
