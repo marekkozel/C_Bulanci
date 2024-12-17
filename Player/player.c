@@ -53,9 +53,14 @@ void init_player(Player *player, SDL_Context *window, int id, SDL_Texture *tex)
 
 void move_player(Player *player, double delta_time, Players *players)
 {
-    printf("anothervel: %f\n", player->velocity_y);
-    detect_players_collisions(player, players);
+    set_player_multiplier_x(player, 1);
+    set_player_multiplier_y(player, 1);
 
+    // Colisions
+    detect_players_collisions(player, players);
+    detect_boarders_collisions(player);
+
+    // Movement
     double velocity_x = get_player_velocity_x(player);
     double velocity_y = get_player_velocity_y(player);
 
@@ -93,8 +98,7 @@ void move_player(Player *player, double delta_time, Players *players)
 
 void detect_players_collisions(Player *player, Players *players)
 {
-    set_player_multiplier_x(player, 1);
-    set_player_multiplier_y(player, 1);
+
     for (int i = 0; i < players->count_players; i++)
     {
         if (player->id != players->players[i].id && SDL_HasIntersection(player->rectangle, players->players[i].rectangle))
@@ -137,6 +141,19 @@ void detect_players_collisions(Player *player, Players *players)
             }
         }
     }
+}
+
+void detect_boarders_collisions(Player *player)
+{
+    if (get_player_x(player) <= 0)
+        set_player_x(player, 0);
+    if (get_player_y(player) <= 0)
+        set_player_y(player, 0);
+
+    if (get_player_x(player) >= WINDOW_WIDTH - get_player_w(player))
+        set_player_x(player, WINDOW_WIDTH - get_player_w(player));
+    if (get_player_y(player) >= WINDOW_HEIGHT - get_player_h(player))
+        set_player_y(player, WINDOW_HEIGHT - get_player_h(player));
 }
 
 // ______________________________________________________________________

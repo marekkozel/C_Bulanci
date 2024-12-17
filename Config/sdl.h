@@ -2,6 +2,9 @@
 
 #include <SDL2/SDL.h>
 
+#define WINDOW_WIDTH (1920)
+#define WINDOW_HEIGHT (1080)
+
 typedef struct
 {
     SDL_Window *window;

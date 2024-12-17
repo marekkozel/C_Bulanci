@@ -1,8 +1,5 @@
 #include "sdl.h"
 
-#define WINDOW_WIDTH (1920)
-#define WINDOW_HEIGHT (1080)
-
 SDL_Context sdl_window_setup()
 {
     return sdl_context_init("Bulanci", WINDOW_WIDTH, WINDOW_HEIGHT);

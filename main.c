@@ -10,6 +10,9 @@
 #include "Player/player.h"
 #include "Config/keybinds.h"
 
+#define WINDOW_WIDTH (1920)
+#define WINDOW_HEIGHT (1080)
+
 int main()
 {
     Uint64 NOW = SDL_GetPerformanceCounter();
