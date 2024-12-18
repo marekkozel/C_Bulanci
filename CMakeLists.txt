@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.12)
 project(sdlapp C)
 
 set(CMAKE_C_STANDARD 11)
+set(CMAKE_USE_RELATIVE_PATHS TRUE)
 
 include_directories(.)
 
@@ -10,6 +11,7 @@ add_executable(game main.c
     Config/sdl.c
     Config/sdl.h
     Config/keybinds.c
+    Scenes/Obstacles/obstacles.c
 )
 
 find_package(SDL2 REQUIRED)

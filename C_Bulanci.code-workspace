@@ -10,5 +10,12 @@
 			"path": "../Vsb_UPR/Laboratory_10"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"stdio.h": "c",
+			"sdl.h": "c",
+			"keybinds.h": "c",
+			"obstacles.h": "c"
+		}
+	}
 }

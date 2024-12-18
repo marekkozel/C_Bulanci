@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "Config/sdl.h"
+#include "Scenes/Obstacles/obstacles.h"
 
 #define PLAYER_SPEED (450)
 #define FRICTION (150)
@@ -33,12 +34,14 @@ typedef struct
 void init_players(Players *players);
 void add_player(Players *players, Player *player);
 
-void init_player(Player *player, SDL_Context *window, int id, SDL_Texture *tex);
+void init_player(Player *player, SDL_Context *window, int id, char tex[100]);
 
-void move_player(Player *player, double delta_time, Players *players);
+void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles);
 
 void detect_players_collisions(Player *player, Players *players);
 void detect_boarders_collisions(Player *Player);
+
+void detect_obstacles_collisions(Player *player, Obstacles *obstacles);
 
 void set_player_friction_x(Player *player, int friction);
 void set_player_friction_y(Player *player, int friction);
@@ -49,7 +52,7 @@ void set_player_x(Player *player, double x);
 void set_player_y(Player *player, double y);
 void set_player_w(Player *player, int w);
 void set_player_h(Player *player, int h);
-void set_player_texture(Player *player, SDL_Texture *texture);
+void set_player_texture(Player *player, SDL_Context *window, char *texture);
 void set_player_health(Player *player, int health);
 void set_player_velovity_x(Player *player, double velocity_x);
 void set_player_velovity_y(Player *player, double velocity_y);
@@ -63,3 +66,5 @@ int get_player_x(Player *player);
 int get_player_y(Player *player);
 int get_player_w(Player *player);
 int get_player_h(Player *player);
+int get_player_multiplier_x(Player *player);
+int get_player_multiplier_y(Player *player);

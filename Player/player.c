@@ -8,14 +8,14 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "Config/sdl.h"
-
+#include "sdl.h"
 #include "player.h"
+#include "Scenes/Obstacles/obstacles.h"
 
 void init_players(Players *players)
 {
     players->count_players = 0;
-    players->players = (Player *)malloc(4 * sizeof(Player));
+    players->players = (Player *)malloc(8 * sizeof(Player));
 }
 
 void add_player(Players *players, Player *player)
@@ -25,12 +25,12 @@ void add_player(Players *players, Player *player)
     players->players[get_player_id(player)] = *player;
 }
 
-void init_player(Player *player, SDL_Context *window, int id, SDL_Texture *tex)
+void init_player(Player *player, SDL_Context *window, int id, char tex[100])
 {
 
     set_player_id(player, id);
 
-    set_player_texture(player, tex);
+    set_player_texture(player, window, tex);
     set_player_health(player, 100);
     set_player_velovity_x(player, 0);
     set_player_velovity_y(player, 0);
@@ -51,7 +51,7 @@ void init_player(Player *player, SDL_Context *window, int id, SDL_Texture *tex)
     set_player_rectangle(player, dest);
 }
 
-void move_player(Player *player, double delta_time, Players *players)
+void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles)
 {
     set_player_multiplier_x(player, 1);
     set_player_multiplier_y(player, 1);
@@ -59,6 +59,7 @@ void move_player(Player *player, double delta_time, Players *players)
     // Colisions
     detect_players_collisions(player, players);
     detect_boarders_collisions(player);
+    detect_obstacles_collisions(player, obstacles);
 
     // Movement
     double velocity_x = get_player_velocity_x(player);
@@ -156,6 +157,52 @@ void detect_boarders_collisions(Player *player)
         set_player_y(player, WINDOW_HEIGHT - get_player_h(player));
 }
 
+void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
+{
+    for (int i = 0; i < obstacles->count_obstacles; i++)
+    {
+        if (SDL_HasIntersection(player->rectangle, obstacles->obstacles[i].rectangle))
+        {
+
+            if (get_player_y(player) < get_obstacle_y(&obstacles->obstacles[i]) + get_obstacle_h(&obstacles->obstacles[i]) - 10 && get_player_y(player) + get_player_h(player) > get_obstacle_y(&obstacles->obstacles[i]) + 10)
+            {
+
+                if (get_player_x(player) <= get_obstacle_x(&obstacles->obstacles[i]) + get_obstacle_w(&obstacles->obstacles[i]) && get_player_x(player) > get_obstacle_x(&obstacles->obstacles[i]) + (get_obstacle_w(&obstacles->obstacles[i]) / 2))
+                {
+                    if (player->velocity_x < 0)
+                    {
+                        set_player_multiplier_x(player, 0);
+                    }
+                }
+                else if (get_player_x(player) + get_player_w(player) >= get_obstacle_x(&obstacles->obstacles[i]))
+                {
+                    if (player->velocity_x > 0)
+                    {
+                        set_player_multiplier_x(player, 0);
+                    }
+                }
+            }
+            else
+            {
+                if (get_player_y(player) <= get_obstacle_y(&obstacles->obstacles[i]) + get_obstacle_h(&obstacles->obstacles[i]) && get_player_y(player) > get_obstacle_y(&obstacles->obstacles[i]) + (get_obstacle_h(&obstacles->obstacles[i]) / 2))
+                {
+                    if (player->velocity_y < 0)
+                    {
+                        set_player_multiplier_y(player, 0);
+                    }
+                }
+                else if (get_player_y(player) + get_player_h(player) >= get_obstacle_y(&obstacles->obstacles[i]))
+                {
+                    if (player->velocity_y > 0)
+                    {
+                        set_player_multiplier_y(player, 0);
+                    }
+                }
+            }
+        }
+    }
+}
+
 // ______________________________________________________________________
 
 void set_player_friction_x(Player *player, int friction)
@@ -198,9 +245,17 @@ void set_player_h(Player *player, int h)
     player->rectangle->h = h;
 }
 
-void set_player_texture(Player *player, SDL_Texture *texture)
+void set_player_texture(Player *player, SDL_Context *window, char *texture)
 {
-    player->texture = texture;
+    SDL_Texture *tex = IMG_LoadTexture(window->renderer, texture);
+    if (!tex)
+    {
+        printf("error creating texture: %s\n", SDL_GetError());
+        sdl_context_free(&window);
+        return;
+    }
+
+    player->texture = tex;
 }
 
 void set_player_health(Player *player, int health)
