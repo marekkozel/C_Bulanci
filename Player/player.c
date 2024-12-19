@@ -11,6 +11,9 @@
 #include "sdl.h"
 #include "player.h"
 #include "Scenes/Obstacles/obstacles.h"
+#include "Config/dynamic_array.h"
+#include "Weapons/Power_ups/power_ups.h"
+#include "Weapons/Projectils/projectils.h"
 
 void init_players(Players *players)
 {
@@ -25,12 +28,14 @@ void add_player(Players *players, Player *player)
     players->players[get_player_id(player)] = *player;
 }
 
-void init_player(Player *player, SDL_Context *window, int id, char tex[100])
+void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color)
 {
 
     set_player_id(player, id);
 
-    set_player_texture(player, window, tex);
+    set_player_color(player, color);
+    set_player_direction(player, 0, -1);
+    set_player_texture(player, window, path);
     set_player_health(player, 100);
     set_player_velovity_x(player, 0);
     set_player_velovity_y(player, 0);
@@ -39,6 +44,7 @@ void init_player(Player *player, SDL_Context *window, int id, char tex[100])
     set_player_friction_y(player, 0);
     set_player_multiplier_x(player, 1);
     set_player_multiplier_y(player, 1);
+    set_player_power(player, GUN);
 
     SDL_Rect *dest = (SDL_Rect *)malloc(sizeof(SDL_Rect));
 
@@ -51,8 +57,14 @@ void init_player(Player *player, SDL_Context *window, int id, char tex[100])
     set_player_rectangle(player, dest);
 }
 
-void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles)
+void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils)
 {
+    if (get_player_heath(player) <= 0)
+    {
+        SDL_Rect rect = {.x = 0, .y = 0, .w = 0, .h = 0};
+        set_player_rectangle(player, &rect);
+    }
+
     set_player_multiplier_x(player, 1);
     set_player_multiplier_y(player, 1);
 
@@ -60,6 +72,8 @@ void move_player(Player *player, double delta_time, Players *players, Obstacles 
     detect_players_collisions(player, players);
     detect_boarders_collisions(player);
     detect_obstacles_collisions(player, obstacles);
+    detect_power_up_collision(player, power_ups);
+    detect_projectils_collision(player, projectils);
 
     // Movement
     double velocity_x = get_player_velocity_x(player);
@@ -97,27 +111,32 @@ void move_player(Player *player, double delta_time, Players *players, Obstacles 
     set_player_velovity_y(player, velocity_y);
 }
 
+void animate_player(Player *player, SDL_Context *window, char *path)
+{
+    set_player_texture(player, window, path);
+}
+
 void detect_players_collisions(Player *player, Players *players)
 {
 
     for (int i = 0; i < players->count_players; i++)
     {
-        if (player->id != players->players[i].id && SDL_HasIntersection(player->rectangle, players->players[i].rectangle))
+        if (get_player_id(player) != players->players[i].id && SDL_HasIntersection(player->rectangle, players->players[i].rectangle))
         {
 
             if (get_player_y(player) < get_player_y(&players->players[i]) + get_player_h(&players->players[i]) - 10 && get_player_y(player) + get_player_h(player) > get_player_y(&players->players[i]) + 10)
             {
 
-                if (get_player_x(player) <= players->players[i].rectangle->x + players->players[i].rectangle->w && get_player_x(player) > players->players[i].rectangle->x + (players->players[i].rectangle->w / 2))
+                if (get_player_x(&players->players[i]) <= get_player_x(player) + get_player_w(player) && get_player_x(player) > get_player_x(&players->players[i]) + (get_player_w(&players->players[i]) / 2))
                 {
-                    if (player->velocity_x < 0)
+                    if (get_player_velocity_x(player) < 0)
                     {
                         set_player_multiplier_x(player, 0);
                     }
                 }
-                else if (get_player_x(player) + get_player_w(player) >= players->players[i].rectangle->x)
+                else if (get_player_x(player) + get_player_w(player) >= get_player_x(&players->players[i]))
                 {
-                    if (player->velocity_x > 0)
+                    if (get_player_velocity_x(player) > 0)
                     {
                         set_player_multiplier_x(player, 0);
                     }
@@ -125,16 +144,16 @@ void detect_players_collisions(Player *player, Players *players)
             }
             else
             {
-                if (get_player_y(player) <= players->players[i].rectangle->y + players->players[i].rectangle->h && get_player_y(player) > players->players[i].rectangle->y + (players->players[i].rectangle->h / 2))
+                if (get_player_y(&players->players[i]) <= get_player_y(player) + get_player_h(player) && get_player_y(player) > get_player_y(&players->players[i]) + (get_player_h(&players->players[i]) / 2))
                 {
-                    if (player->velocity_y < 0)
+                    if (get_player_velocity_y(player) < 0)
                     {
                         set_player_multiplier_y(player, 0);
                     }
                 }
-                else if (get_player_y(player) + get_player_h(player) >= players->players[i].rectangle->y)
+                else if (get_player_y(player) + get_player_h(player) >= get_player_y(&players->players[i]))
                 {
-                    if (player->velocity_y > 0)
+                    if (get_player_velocity_y(player) > 0)
                     {
                         set_player_multiplier_y(player, 0);
                     }
@@ -203,6 +222,53 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
     }
 }
 
+void detect_power_up_collision(Player *player, dynarray *array)
+{
+    for (int i = 0; i < array->size; i++)
+    {
+        Power_up *power_up;
+        power_up = dynarray_get(array, i);
+
+        if (SDL_HasIntersection(player->rectangle, power_up->rectangle))
+        {
+            set_player_power(player, get_power_up_power(power_up));
+            dynarray_remove(array, power_up);
+        }
+    }
+}
+
+void detect_projectils_collision(Player *player, dynarray *projectils)
+{
+    for (int i = 0; i < projectils->size; i++)
+    {
+        Projectil *projectil;
+        projectil = dynarray_get(projectils, i);
+
+        if (SDL_HasIntersection(player->rectangle, projectil->rectangle) && get_projectil_player_id(projectil) != get_player_id(player))
+        {
+            player->health -= 50;
+            printf("damaged, player_id: %d", get_player_id(player));
+            dynarray_remove(projectils, projectil);
+        }
+    }
+}
+
+void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window)
+{
+    char path[100] = "";
+    switch (get_player_power(player))
+    {
+    case GUN:
+        strcpy(path, "../Assets/Projectils/bullet.png");
+        break;
+
+    default:
+        break;
+    }
+
+    init_projectil(projectils, window, 0, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), get_player_direction_x(player), get_player_direction_y(player), path);
+}
+
 // ______________________________________________________________________
 
 void set_player_friction_x(Player *player, int friction)
@@ -245,15 +311,56 @@ void set_player_h(Player *player, int h)
     player->rectangle->h = h;
 }
 
-void set_player_texture(Player *player, SDL_Context *window, char *texture)
+void set_player_texture(Player *player, SDL_Context *window, char *path)
 {
-    SDL_Texture *tex = IMG_LoadTexture(window->renderer, texture);
-    if (!tex)
+    char color[100] = "";
+    char direction[100] = "";
+    char image_path[500] = "";
+    switch (get_player_color(player))
     {
-        printf("error creating texture: %s\n", SDL_GetError());
-        sdl_context_free(&window);
-        return;
+    case RED:
+        strcpy(color, "red");
+        break;
+
+    case BLUE:
+        strcpy(color, "blue");
+        break;
+
+    case GREEN:
+        strcpy(color, "green");
+        break;
+
+    case ORANGE:
+        strcpy(color, "orange");
+        break;
+
+    default:
+        strcpy(color, "orange");
+        break;
     }
+
+    if (get_player_direction_x(player) > 0)
+    {
+        strcpy(direction, "right");
+    }
+    else if (get_player_direction_x(player) < 0)
+    {
+        strcpy(direction, "left");
+    }
+
+    if (get_player_direction_y(player) > 0)
+    {
+        strcpy(direction, "down");
+    }
+    else if (get_player_direction_y(player) < 0)
+    {
+        strcpy(direction, "up");
+    }
+
+    sprintf(image_path, "%s%s_bulanek_%s.png", path, color, direction);
+
+    SDL_Texture *tex = IMG_LoadTexture(window->renderer, image_path);
+    assert(tex);
 
     player->texture = tex;
 }
@@ -282,6 +389,22 @@ void set_player_multiplier_x(Player *player, int multiplier)
 void set_player_multiplier_y(Player *player, int multiplier)
 {
     player->multiplier_y = multiplier;
+}
+
+void set_player_direction(Player *player, int direction_x, int direction_y)
+{
+    player->direction_x = direction_x;
+    player->direction_y = direction_y;
+}
+
+void set_player_color(Player *player, Color color)
+{
+    player->color = color;
+}
+
+void set_player_power(Player *player, Power power)
+{
+    player->power = power;
 }
 
 int get_player_id(Player *player)
@@ -327,4 +450,29 @@ int get_player_multiplier_x(Player *player)
 int get_player_multiplier_y(Player *player)
 {
     return player->multiplier_y;
+}
+
+int get_player_direction_x(Player *player)
+{
+    return player->direction_x;
+}
+
+int get_player_direction_y(Player *player)
+{
+    return player->direction_y;
+}
+
+int get_player_heath(Player *player)
+{
+    return player->health;
+}
+
+Color get_player_color(Player *player)
+{
+    return player->color;
+}
+
+Power get_player_power(Player *player)
+{
+    return player->power;
 }

@@ -6,18 +6,24 @@
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
 #include <time.h>
+#include <assert.h>
 #include "Config/sdl.h"
 #include "player.h"
 #include "keybinds.h"
 #include "Scenes/Obstacles/obstacles.h"
+#include "Config/dynamic_array.h"
+#include "Weapons/Power_ups/power_ups.h"
+#include "Weapons/Projectils/projectils.h"
 
 #define WINDOW_WIDTH (1920)
 #define WINDOW_HEIGHT (1080)
 
 int main()
 {
-    double seconds_timer = 0;
-    double delta_timer = 0;
+    srand(time(NULL));
+
+    int seconds_timer = 1;
+    double delta_timer = 1;
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
     double deltaTime = 0;
@@ -25,19 +31,13 @@ int main()
     SDL_Context window = sdl_window_setup();
 
     // World section
-    SDL_Texture *background_text = IMG_LoadTexture(window.renderer, "/home/marek/C_Bulanci/Assets/background.png");
-    if (!background_text)
-    {
-        printf("error creating texture: %s\n", SDL_GetError());
-        sdl_context_free(&window);
-        return;
-    }
+    SDL_Texture *background_text = IMG_LoadTexture(window.renderer, "../Assets/background.png");
+    assert(background_text);
+
     SDL_Rect background_rect;
     SDL_QueryTexture(background_text, NULL, NULL, &background_rect.w, &background_rect.h);
     background_rect.x = 0;
     background_rect.y = 0;
-    // background_rect.w *= 1.5;
-    // background_rect.h *= 1.5;
 
     Obstacles obstacles;
     init_obstacles(&obstacles, 1);
@@ -47,32 +47,49 @@ int main()
     Players players;
     init_players(&players);
 
+    char player_path[500] = "../Assets/Player/";
+
     Player player1;
-    init_player(&player1, &window, 0, "/home/marek/C_Bulanci/Assets/Player/blue_bulanek_down.png");
+    init_player(&player1, &window, 0, player_path, RED);
 
     add_player(&players, &player1);
 
     Player player2;
-    init_player(&player2, &window, 1, "/home/marek/C_Bulanci/Assets/Player/red_bulanek_up.png");
+    init_player(&player2, &window, 1, player_path, GREEN);
 
     add_player(&players, &player2);
 
     Player player3;
-    init_player(&player3, &window, 2, "/home/marek/C_Bulanci/Assets/Player/green_bulanek_down.png");
+    init_player(&player3, &window, 2, player_path, BLUE);
 
     add_player(&players, &player3);
 
     Player player4;
-    init_player(&player4, &window, 3, "/home/marek/C_Bulanci/Assets/Player/orange_bulanek_down.png");
+    init_player(&player4, &window, 3, player_path, ORANGE);
 
     add_player(&players, &player4);
+
+    // Power_up section
+    dynarray power_ups;
+    init_power_ups(&power_ups);
+
+    // Projectils
+    dynarray projectils;
+    init_projectils(&projectils);
 
     int *close_request = (int *)malloc(sizeof(int));
     *close_request = 0;
 
     while (!*close_request)
     {
-        seconds_timer = delta_timer * deltaTime;
+        if (delta_timer * deltaTime >= 1)
+        {
+
+            spawn_power_up(&power_ups, &window, seconds_timer);
+
+            seconds_timer++;
+            delta_timer = 0;
+        }
 
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
@@ -83,11 +100,12 @@ int main()
 
         SDL_RenderCopy(window.renderer, background_text, NULL, &background_rect);
 
-        read_keys(close_request, &window, &players);
+        read_keys(close_request, &window, &players, &projectils);
 
         for (int i = 0; i < players.count_players; i++)
         {
-            move_player(&players.players[i], deltaTime, &players, &obstacles);
+            animate_player(&players.players[i], &window, player_path);
+            move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils);
 
             SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, players.players[i].rectangle);
         }
@@ -95,6 +113,21 @@ int main()
         for (int i = 0; i < obstacles.count_obstacles; i++)
         {
             SDL_RenderCopy(window.renderer, obstacles.obstacles[i].texture, NULL, obstacles.obstacles[i].rectangle);
+        }
+
+        for (int i = 0; i < power_ups.size; i++)
+        {
+            Power_up *power_up;
+            power_up = dynarray_get(&power_ups, i);
+            SDL_RenderCopy(window.renderer, power_up->texture, NULL, power_up->rectangle);
+        }
+
+        for (int i = 0; i < projectils.size; i++)
+        {
+            Projectil *projectil;
+            projectil = dynarray_get(&projectils, i);
+            move_projectil(projectil, deltaTime);
+            SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
         }
 
         SDL_RenderPresent(window.renderer);

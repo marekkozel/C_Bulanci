@@ -14,7 +14,7 @@
 void set_obstacles(Obstacles *obstacles, SDL_Context *window)
 {
     Obstacle obst;
-    init_obstacle(window, obstacles, &obst, 0, "/home/marek/C_Bulanci/Assets/Obstacles/rectangle_obstacle.png", 1000, 500);
+    init_obstacle(window, obstacles, &obst, 0, "../Assets/Obstacles/rectangle_obstacle.png", 1000, 500);
 }
 
 void init_obstacles(Obstacles *obstacles, int size)
@@ -63,12 +63,8 @@ void set_obstacle_name(Obstacle *obstacle, char *name)
 void set_obstacle_texture(Obstacle *obstacle, SDL_Context *window, char *texture)
 {
     SDL_Texture *tex = IMG_LoadTexture(window->renderer, texture);
-    if (!tex)
-    {
-        printf("error creating texture: %s\n", SDL_GetError());
-        sdl_context_free(&window);
-        return;
-    }
+    assert(tex);
+
     obstacle->texture = tex;
 }
 

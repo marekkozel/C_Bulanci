@@ -15,7 +15,11 @@
 			"stdio.h": "c",
 			"sdl.h": "c",
 			"keybinds.h": "c",
-			"obstacles.h": "c"
+			"obstacles.h": "c",
+			"dynamic_array.h": "c",
+			"player.h": "c",
+			"power_ups.h": "c",
+			"projectils.h": "c"
 		}
 	}
 }

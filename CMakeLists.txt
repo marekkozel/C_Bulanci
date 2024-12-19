@@ -12,6 +12,9 @@ add_executable(game main.c
     Config/sdl.h
     Config/keybinds.c
     Scenes/Obstacles/obstacles.c
+    Config/dynamic_array.c
+    Weapons/Power_ups/power_ups.c
+    Weapons/Projectils/projectils.c
 )
 
 find_package(SDL2 REQUIRED)
