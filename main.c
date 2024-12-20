@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <time.h>
 #include <assert.h>
 #include "Config/sdl.h"
@@ -26,6 +27,7 @@ int main()
     double delta_timer = 1;
     Uint64 NOW = SDL_GetPerformanceCounter();
     Uint64 LAST = 0;
+    double miliseconds_time = 0;
     double deltaTime = 0;
 
     SDL_Context window = sdl_window_setup();
@@ -59,15 +61,15 @@ int main()
 
     add_player(&players, &player2);
 
-    Player player3;
-    init_player(&player3, &window, 2, player_path, BLUE);
+    // Player player3;
+    // init_player(&player3, &window, 2, player_path, BLUE);
 
-    add_player(&players, &player3);
+    // add_player(&players, &player3);
 
-    Player player4;
-    init_player(&player4, &window, 3, player_path, ORANGE);
+    // Player player4;
+    // init_player(&player4, &window, 3, player_path, ORANGE);
 
-    add_player(&players, &player4);
+    // add_player(&players, &player4);
 
     // Power_up section
     dynarray power_ups;
@@ -77,22 +79,24 @@ int main()
     dynarray projectils;
     init_projectils(&projectils);
 
+    // Font
+
     int *close_request = (int *)malloc(sizeof(int));
     *close_request = 0;
 
     while (!*close_request)
     {
-        if (delta_timer * deltaTime >= 1)
+        if (round(miliseconds_time) - 1 == seconds_timer)
         {
-
             spawn_power_up(&power_ups, &window, seconds_timer);
 
             seconds_timer++;
-            delta_timer = 0;
         }
 
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
+
+        uint32_t startTime = SDL_GetTicks();
 
         deltaTime = (double)((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
 
@@ -100,12 +104,12 @@ int main()
 
         SDL_RenderCopy(window.renderer, background_text, NULL, &background_rect);
 
-        read_keys(close_request, &window, &players, &projectils);
+        read_keys(close_request, &window, &players, &projectils, miliseconds_time);
 
         for (int i = 0; i < players.count_players; i++)
         {
             animate_player(&players.players[i], &window, player_path);
-            move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils);
+            move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils, miliseconds_time);
 
             SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, players.players[i].rectangle);
         }
@@ -128,14 +132,44 @@ int main()
             projectil = dynarray_get(&projectils, i);
             move_projectil(projectil, deltaTime);
             SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
+            projectil_collision(&projectils, &obstacles, projectil);
+            destruct_projectil(&projectils, projectil, miliseconds_time);
         }
+
+        // SDL_RenderCopy(window.renderer, Message, NULL, &Message_rect);
 
         SDL_RenderPresent(window.renderer);
 
-        delta_timer++;
+        uint32_t currTime = SDL_GetTicks();
+
+        miliseconds_time += (currTime - startTime) / 1000.0; // Convert to seconds.
     }
 
+    // SDL_FreeSurface(surfaceMessage);
+    // SDL_DestroyTexture(Message);
     sdl_context_free(&window);
 
     return 0;
+}
+
+void drawText(SDL_Surface *screen, char *string,
+              int size, int x, int y,
+              int fR, int fG, int fB,
+              int bR, int bG, int bB)
+{
+
+    TTF_Font *font = TTF_OpenFont("ARIAL.TTF", size);
+
+    SDL_Color foregroundColor = {fR, fG, fB};
+    SDL_Color backgroundColor = {bR, bG, bB};
+
+    SDL_Surface *textSurface = TTF_RenderText_Shaded(font, string, foregroundColor, backgroundColor);
+
+    SDL_Rect textLocation = {x, y, 0, 0};
+
+    SDL_BlitSurface(textSurface, NULL, screen, &textLocation);
+
+    SDL_FreeSurface(textSurface);
+
+    TTF_CloseFont(font);
 }

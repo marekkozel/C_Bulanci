@@ -14,6 +14,7 @@
 void set_obstacles(Obstacles *obstacles, SDL_Context *window)
 {
     Obstacle obst;
+
     init_obstacle(window, obstacles, &obst, 0, "../Assets/Obstacles/rectangle_obstacle.png", 1000, 500);
 }
 

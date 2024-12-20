@@ -19,7 +19,10 @@
 			"dynamic_array.h": "c",
 			"player.h": "c",
 			"power_ups.h": "c",
-			"projectils.h": "c"
+			"projectils.h": "c",
+			"time.h": "c",
+			"sdl_ttf.h": "c",
+			"sdl_image.h": "c"
 		}
 	}
 }

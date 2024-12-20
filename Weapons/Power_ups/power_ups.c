@@ -35,6 +35,8 @@ void init_power_up(dynarray *power_ups, SDL_Context *window, int id, int x, int 
 
     set_power_up_rectangle(power_up, dest);
 
+    power_up_collision(power_up, power_ups);
+
     dynarray_push(power_ups, power_up);
 }
 
@@ -42,11 +44,54 @@ void spawn_power_up(dynarray *power_ups, SDL_Context *window, int timer)
 {
     if (timer % 10 == 0)
     {
-        char path[500] = "../Assets/Power_ups/power_up.png";
-        init_power_up(power_ups, window, 0, rand() % 1920, rand() % 1080, SHOTGUN, path);
+
+        char path[500] = "../Assets/Power_ups/";
+        int power_up_type = rand() % 4;
+        int rand_x = 200 + (1520 * (rand() % 2));
+        int rand_y = 200 + (680 * (rand() % 2));
+        switch (power_up_type)
+        {
+        case 0:
+            strcat(path, "gun_power_up.png");
+            init_power_up(power_ups, window, 0, rand_x, rand_y, GUN, path);
+
+            break;
+        case 1:
+            strcat(path, "shotgun_power_up.png");
+            init_power_up(power_ups, window, 1, rand_x, rand_y, SHOTGUN, path);
+
+            break;
+        case 2:
+            strcat(path, "rocket_power_up.png");
+            init_power_up(power_ups, window, 2, rand_x, rand_y, ROCKET, path);
+
+            break;
+        case 3:
+            strcat(path, "mine_power_up.png");
+            init_power_up(power_ups, window, 3, rand_x, rand_y, MINE, path);
+
+            break;
+
+        default:
+            strcat(path, "gun_power_up.png");
+            init_power_up(power_ups, window, 0, rand_x, rand_y, GUN, path);
+            break;
+        }
     }
 }
+void power_up_collision(Power_up *power_up, dynarray *power_ups)
+{
+    for (int i = 0; i < power_ups->size; i++)
+    {
+        Power_up *another_power_up;
+        another_power_up = dynarray_get(power_ups, i);
 
+        if (SDL_HasIntersection(power_up->rectangle, another_power_up->rectangle))
+        {
+            dynarray_remove(power_ups, another_power_up);
+        }
+    }
+}
 //-----------------------------------
 // Setters
 

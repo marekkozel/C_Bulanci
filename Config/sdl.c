@@ -38,5 +38,6 @@ void sdl_context_free(SDL_Context *ctx)
 {
     SDL_DestroyRenderer(&ctx->renderer);
     SDL_DestroyWindow(&ctx->window);
+
     SDL_Quit();
 }

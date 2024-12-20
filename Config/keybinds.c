@@ -24,7 +24,7 @@
 //     UP_RIGHT
 // } KeyPressed;
 
-void read_keys(int *close_request, SDL_Context *window, Players *players, dynarray *projectils)
+void read_keys(int *close_request, SDL_Context *window, Players *players, dynarray *projectils, double timer)
 {
     Player *player1 = &players->players[0];
     Player *player2 = &players->players[1];
@@ -106,7 +106,11 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
 
                 break;
             case SDL_SCANCODE_SPACE:
-                spawn_projectil(player1, projectils, window);
+                spawn_projectil(player1, projectils, window, timer);
+
+                break;
+            case SDL_SCANCODE_KP_0:
+                spawn_projectil(player2, projectils, window, timer);
 
                 break;
             }

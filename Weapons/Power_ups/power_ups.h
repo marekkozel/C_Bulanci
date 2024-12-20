@@ -8,8 +8,9 @@
 typedef enum
 {
     GUN,
-    SPEED,
-    SHOTGUN
+    SHOTGUN,
+    ROCKET,
+    MINE
 } Power;
 
 typedef struct
@@ -25,6 +26,8 @@ void init_power_ups(dynarray *power_ups);
 void init_power_up(dynarray *power_ups, SDL_Context *window, int id, int x, int y, Power power, char *path);
 
 void spawn_power_up(dynarray *power_ups, SDL_Context *window, int timer);
+
+void power_up_collision(Power_up *power_up, dynarray *power_ups);
 
 void set_power_up_id(Power_up *power_up, int id);
 

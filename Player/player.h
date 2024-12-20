@@ -19,6 +19,7 @@ typedef enum
 typedef struct
 {
     int id;
+    int score;
     SDL_Rect *rectangle;
     double velocity_x;
     double velocity_y;
@@ -29,6 +30,7 @@ typedef struct
     int direction_x;
     int direction_y;
     Power power;
+    double power_time;
     SDL_Texture *texture;
     Color color;
     int health;
@@ -45,7 +47,9 @@ void add_player(Players *players, Player *player);
 
 void init_player(Player *player, SDL_Context *window, int id, char tex[100], Color color);
 
-void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils);
+void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, double time);
+
+void respawn_player(Players *players, Player *player, Obstacles *obsatcles);
 
 void animate_player(Player *player, SDL_Context *window, char *path);
 
@@ -54,11 +58,15 @@ void detect_boarders_collisions(Player *Player);
 
 void detect_obstacles_collisions(Player *player, Obstacles *obstacles);
 
-void detect_power_up_collision(Player *player, dynarray *array);
+void detect_power_up_collision(Player *player, dynarray *array, double time);
 
-void detect_projectils_collision(Player *player, dynarray *projectils);
+void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles);
 
-void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window);
+void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer);
+
+void add_player_score(Player *player, int score);
+
+void set_player_score(Player *player, int score);
 
 void set_player_friction_x(Player *player, int friction);
 void set_player_friction_y(Player *player, int friction);
@@ -79,6 +87,7 @@ void set_player_direction(Player *player, int direction_x, int direction_y);
 void set_player_color(Player *player, Color color);
 
 void set_player_power(Player *player, Power power);
+void set_player_power_time(Player *player, double time);
 
 int get_player_id(Player *player);
 double get_player_velocity_x(Player *player);
@@ -97,3 +106,5 @@ int get_player_heath(Player *player);
 Color get_player_color(Player *player);
 
 Power get_player_power(Player *player);
+
+int get_player_score(Player *player);
