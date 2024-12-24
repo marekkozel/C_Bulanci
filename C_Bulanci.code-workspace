@@ -22,7 +22,11 @@
 			"projectils.h": "c",
 			"time.h": "c",
 			"sdl_ttf.h": "c",
-			"sdl_image.h": "c"
+			"sdl_image.h": "c",
+			"main_menu.h": "c",
+			"sdl_timer.h": "c",
+			"assert.h": "c",
+			"math.h": "c"
 		}
 	}
 }

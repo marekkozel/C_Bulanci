@@ -15,6 +15,7 @@ add_executable(game main.c
     Config/dynamic_array.c
     Weapons/Power_ups/power_ups.c
     Weapons/Projectils/projectils.c
+    Scenes/Main_menu/main_menu.c
 )
 
 find_package(SDL2 REQUIRED)

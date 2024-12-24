@@ -2,7 +2,7 @@
 
 SDL_Context sdl_window_setup()
 {
-    return sdl_context_init("Bulanci", WINDOW_WIDTH, WINDOW_HEIGHT);
+    return sdl_context_init("Čtverhránci", WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 SDL_Context sdl_context_init(const char *window_name, int width, int height)

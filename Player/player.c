@@ -132,7 +132,7 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
         }
         for (int i = 0; i < players->count_players; i++)
         {
-            if (SDL_HasIntersection(dest, players->players[i].rectangle))
+            if (SDL_HasIntersection(dest, &players->players[i].rectangle))
             {
                 can_spawn = 1;
                 break;
@@ -154,7 +154,7 @@ void detect_players_collisions(Player *player, Players *players)
 
     for (int i = 0; i < players->count_players; i++)
     {
-        if (get_player_id(player) != players->players[i].id && SDL_HasIntersection(player->rectangle, players->players[i].rectangle))
+        if (get_player_id(player) != players->players[i].id && SDL_HasIntersection(&player->rectangle, &players->players[i].rectangle))
         {
 
             if (get_player_y(player) < get_player_y(&players->players[i]) + get_player_h(&players->players[i]) - 10 && get_player_y(player) + get_player_h(player) > get_player_y(&players->players[i]) + 10)
@@ -213,7 +213,7 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
 {
     for (int i = 0; i < obstacles->count_obstacles; i++)
     {
-        if (SDL_HasIntersection(player->rectangle, obstacles->obstacles[i].rectangle))
+        if (SDL_HasIntersection(&player->rectangle, obstacles->obstacles[i].rectangle))
         {
 
             if (get_player_y(player) < get_obstacle_y(&obstacles->obstacles[i]) + get_obstacle_h(&obstacles->obstacles[i]) - 10 && get_player_y(player) + get_player_h(player) > get_obstacle_y(&obstacles->obstacles[i]) + 10)
@@ -262,7 +262,7 @@ void detect_power_up_collision(Player *player, dynarray *power_ups, double time)
         Power_up *power_up;
         power_up = dynarray_get(power_ups, i);
 
-        if (SDL_HasIntersection(player->rectangle, power_up->rectangle))
+        if (SDL_HasIntersection(&player->rectangle, power_up->rectangle))
         {
             set_player_power(player, get_power_up_power(power_up));
             set_player_power_time(player, time);
@@ -278,7 +278,7 @@ void detect_projectils_collision(Players *players, Player *player, dynarray *pro
         Projectil *projectil;
         projectil = dynarray_get(projectils, i);
 
-        if (SDL_HasIntersection(player->rectangle, projectil->rectangle) && get_projectil_player_id(projectil) != get_player_id(player))
+        if (SDL_HasIntersection(&player->rectangle, projectil->rectangle) && get_projectil_player_id(projectil) != get_player_id(player))
         {
 
             player->health -= 50;
@@ -403,27 +403,27 @@ void set_player_id(Player *player, int id)
 
 void set_player_rectangle(Player *player, SDL_Rect *rect)
 {
-    player->rectangle = rect;
+    player->rectangle = *rect;
 }
 
 void set_player_x(Player *player, double x)
 {
-    player->rectangle->x = floor(x);
+    player->rectangle.x = floor(x);
 }
 
 void set_player_y(Player *player, double y)
 {
-    player->rectangle->y = floor(y);
+    player->rectangle.y = floor(y);
 }
 
 void set_player_w(Player *player, int w)
 {
-    player->rectangle->w = w;
+    player->rectangle.w = w;
 }
 
 void set_player_h(Player *player, int h)
 {
-    player->rectangle->h = h;
+    player->rectangle.h = h;
 }
 
 void set_player_texture(Player *player, SDL_Context *window, char *path)
@@ -544,22 +544,22 @@ double get_player_velocity_y(Player *player)
 
 int get_player_x(Player *player)
 {
-    return player->rectangle->x;
+    return player->rectangle.x;
 }
 
 int get_player_y(Player *player)
 {
-    return player->rectangle->y;
+    return player->rectangle.y;
 }
 
 int get_player_w(Player *player)
 {
-    return player->rectangle->w;
+    return player->rectangle.w;
 }
 
 int get_player_h(Player *player)
 {
-    return player->rectangle->h;
+    return player->rectangle.h;
 }
 
 int get_player_multiplier_x(Player *player)

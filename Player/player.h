@@ -20,7 +20,7 @@ typedef struct
 {
     int id;
     int score;
-    SDL_Rect *rectangle;
+    SDL_Rect rectangle;
     double velocity_x;
     double velocity_y;
     int friction_x;

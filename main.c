@@ -15,6 +15,7 @@
 #include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"
 #include "Weapons/Projectils/projectils.h"
+#include "Scenes/Main_menu/main_menu.h"
 
 #define WINDOW_WIDTH (1920)
 #define WINDOW_HEIGHT (1080)
@@ -80,9 +81,27 @@ int main()
     init_projectils(&projectils);
 
     // Font
+    TTF_Init();
+    TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 45);
+    assert(font);
+    TTF_Font *main_font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 65);
+    assert(font);
+
+    char score_text[50] = "";
+
+    sprintf(score_text, "Score: ");
+
+    SDL_Color RGB_WHITE = {255, 255, 255};
+
+    SDL_Surface *score_surface = TTF_RenderText_Solid(font, score_text, RGB_WHITE);
+
+    SDL_Texture *score_texture = SDL_CreateTextureFromSurface(window.renderer, score_surface);
 
     int *close_request = (int *)malloc(sizeof(int));
     *close_request = 0;
+
+    // Main menu
+    start_main_menu(&players, &window, close_request, font, main_font);
 
     while (!*close_request)
     {
@@ -111,7 +130,25 @@ int main()
             animate_player(&players.players[i], &window, player_path);
             move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils, miliseconds_time);
 
-            SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, players.players[i].rectangle);
+            SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, &players.players[i].rectangle);
+
+            sprintf(score_text, "Score : %d", get_player_score(&players.players[i]));
+
+            score_surface = TTF_RenderText_Solid(font, score_text, RGB_WHITE);
+            score_texture = SDL_CreateTextureFromSurface(window.renderer, score_surface);
+
+            if (get_player_id(&players.players[i]) == 0)
+            {
+                SDL_Rect score_rect0 = {.x = 50, .y = 40, score_surface->w, score_surface->h};
+                SDL_RenderCopy(window.renderer, score_texture, NULL, &score_rect0);
+            }
+            else if (get_player_id(&players.players[i]) == 1)
+            {
+                SDL_Rect score_rect1 = {.x = WINDOW_WIDTH - score_surface->w - 50, .y = 40, score_surface->w, score_surface->h};
+                SDL_RenderCopy(window.renderer, score_texture, NULL, &score_rect1);
+            }
+            SDL_DestroyTexture(score_texture);
+            SDL_FreeSurface(score_surface);
         }
 
         for (int i = 0; i < obstacles.count_obstacles; i++)
@@ -136,8 +173,6 @@ int main()
             destruct_projectil(&projectils, projectil, miliseconds_time);
         }
 
-        // SDL_RenderCopy(window.renderer, Message, NULL, &Message_rect);
-
         SDL_RenderPresent(window.renderer);
 
         uint32_t currTime = SDL_GetTicks();
@@ -145,31 +180,8 @@ int main()
         miliseconds_time += (currTime - startTime) / 1000.0; // Convert to seconds.
     }
 
-    // SDL_FreeSurface(surfaceMessage);
-    // SDL_DestroyTexture(Message);
+    TTF_CloseFont(font);
     sdl_context_free(&window);
 
     return 0;
-}
-
-void drawText(SDL_Surface *screen, char *string,
-              int size, int x, int y,
-              int fR, int fG, int fB,
-              int bR, int bG, int bB)
-{
-
-    TTF_Font *font = TTF_OpenFont("ARIAL.TTF", size);
-
-    SDL_Color foregroundColor = {fR, fG, fB};
-    SDL_Color backgroundColor = {bR, bG, bB};
-
-    SDL_Surface *textSurface = TTF_RenderText_Shaded(font, string, foregroundColor, backgroundColor);
-
-    SDL_Rect textLocation = {x, y, 0, 0};
-
-    SDL_BlitSurface(textSurface, NULL, screen, &textLocation);
-
-    SDL_FreeSurface(textSurface);
-
-    TTF_CloseFont(font);
 }
