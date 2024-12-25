@@ -16,6 +16,7 @@ add_executable(game main.c
     Weapons/Power_ups/power_ups.c
     Weapons/Projectils/projectils.c
     Scenes/Main_menu/main_menu.c
+    Scenes/Leaderboard/leaderboard.c
 )
 
 find_package(SDL2 REQUIRED)

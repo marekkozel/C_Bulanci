@@ -1,9 +1,22 @@
 #pragma once
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
-#include "Config/sdl.h"
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
+#include <time.h>
+#include <math.h>
+#include <assert.h>
+#include "sdl.h"
 #include "Scenes/Obstacles/obstacles.h"
+#include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"
+#include "Weapons/Projectils/projectils.h"
+#include "Config/sdl.h"
 
 #define PLAYER_SPEED (450)
 #define FRICTION (150)
@@ -34,6 +47,7 @@ typedef struct
     SDL_Texture *texture;
     Color color;
     int health;
+    int type;
 } Player;
 
 typedef struct
@@ -45,7 +59,7 @@ typedef struct
 void init_players(Players *players);
 void add_player(Players *players, Player *player);
 
-void init_player(Player *player, SDL_Context *window, int id, char tex[100], Color color);
+void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type);
 
 void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, double time);
 
@@ -67,6 +81,8 @@ void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, 
 void add_player_score(Player *player, int score);
 
 void set_player_score(Player *player, int score);
+
+void set_player_type(Player *player, int type);
 
 void set_player_friction_x(Player *player, int friction);
 void set_player_friction_y(Player *player, int friction);
@@ -90,6 +106,7 @@ void set_player_power(Player *player, Power power);
 void set_player_power_time(Player *player, double time);
 
 int get_player_id(Player *player);
+int get_player_type(Player *player);
 double get_player_velocity_x(Player *player);
 double get_player_velocity_y(Player *player);
 int get_player_x(Player *player);

@@ -1,24 +1,10 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
-#include <time.h>
-#include <math.h>
-#include <assert.h>
-#include "sdl.h"
+
 #include "player.h"
-#include "Scenes/Obstacles/obstacles.h"
-#include "Config/dynamic_array.h"
-#include "Weapons/Power_ups/power_ups.h"
-#include "Weapons/Projectils/projectils.h"
 
 void init_players(Players *players)
 {
     players->count_players = 0;
-    players->players = (Player *)malloc(8 * sizeof(Player));
+    players->players = (Player *)calloc(8 * sizeof(Player), 0);
 }
 
 void add_player(Players *players, Player *player)
@@ -28,7 +14,7 @@ void add_player(Players *players, Player *player)
     players->players[get_player_id(player)] = *player;
 }
 
-void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color)
+void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type)
 {
 
     set_player_id(player, id);
@@ -46,6 +32,7 @@ void init_player(Player *player, SDL_Context *window, int id, char path[100], Co
     set_player_multiplier_y(player, 1);
     set_player_power(player, GUN);
     set_player_score(player, 0);
+    set_player_type(player, type);
 
     SDL_Rect *dest = (SDL_Rect *)malloc(sizeof(SDL_Rect));
 
@@ -386,6 +373,11 @@ void set_player_score(Player *player, int score)
     player->score = score;
 }
 
+void set_player_type(Player *player, int type)
+{
+    player->type = type;
+}
+
 void set_player_friction_x(Player *player, int friction)
 {
     player->friction_x = friction;
@@ -530,6 +522,11 @@ void set_player_power_time(Player *player, double time)
 int get_player_id(Player *player)
 {
     return player->id;
+}
+
+int get_player_type(Player *player)
+{
+    return player->type;
 }
 
 double get_player_velocity_x(Player *player)

@@ -21,7 +21,7 @@ void init_Text(Text *text, SDL_Color color, TTF_Font *font, char input_text[100]
 
 void init_Icon(Icon *icon, int id, Color color, SDL_Context *window, TTF_Font *font)
 {
-    int x_offset = 5;
+    int x_offset = 3;
     int y_offset = 10;
     SDL_Color RGB_WHITE = {255, 255, 255};
 
@@ -35,7 +35,7 @@ void init_Icon(Icon *icon, int id, Color color, SDL_Context *window, TTF_Font *f
     SDL_QueryTexture(get_icon_texture(icon), NULL, NULL, &rect->w, &rect->h);
     rect->w *= 5;
     rect->h *= 5;
-    rect->x = (WINDOW_WIDTH / x_offset) * 4 - rect->w / 2;
+    rect->x = (WINDOW_WIDTH / x_offset) * 2 - rect->w / 2;
     rect->y = (WINDOW_HEIGHT / y_offset) * 2 * (id + 1) - 15;
     set_icon_rectangle(icon, rect);
 
@@ -65,14 +65,14 @@ void init_Icon(Icon *icon, int id, Color color, SDL_Context *window, TTF_Font *f
     // icon_arrow_left
     Text icon_arrow_left;
     init_Text(&icon_arrow_left, RGB_WHITE, font, arrow_left, window);
-    set_text_x(&icon_arrow_left, (WINDOW_WIDTH / x_offset) * 4 - get_text_w(&icon_arrow_left) / 2 - get_icon_w(icon) - 50);
+    set_text_x(&icon_arrow_left, (WINDOW_WIDTH / x_offset) * 2 - get_text_w(&icon_arrow_left) / 2 - get_icon_w(icon) - 50);
     set_text_y(&icon_arrow_left, (WINDOW_HEIGHT / y_offset) * 2 * (id + 1));
     set_icon_icon_arrow_left(icon, icon_arrow_left);
 
     // icon_arrow_right
     Text icon_arrow_right;
     init_Text(&icon_arrow_right, RGB_WHITE, font, arrow_right, window);
-    set_text_x(&icon_arrow_right, (WINDOW_WIDTH / x_offset) * 4 - get_text_w(&icon_arrow_right) / 2 + get_icon_w(icon) + 50);
+    set_text_x(&icon_arrow_right, (WINDOW_WIDTH / x_offset) * 2 - get_text_w(&icon_arrow_right) / 2 + get_icon_w(icon) + 50);
     set_text_y(&icon_arrow_right, (WINDOW_HEIGHT / y_offset) * 2 * (id + 1));
     set_icon_icon_arrow_right(icon, icon_arrow_right);
 }
@@ -92,7 +92,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
 
     char main_text[100] = "CUBES BATTLE";
     char newGame_text[100] = "New Game";
-    char leadboard_text[100] = "Leadboard";
+    char leaderboard_text[100] = "Leaderboard";
     char exitGame_text[100] = "Exit Game";
 
     SDL_Color RGB_WHITE = {255, 255, 255};
@@ -109,10 +109,10 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
     set_text_y(&newGame_Text, (WINDOW_HEIGHT / 9) * 3);
 
     // Leadboard
-    Text leadboard_Text;
-    init_Text(&leadboard_Text, RGB_WHITE, font, leadboard_text, window);
-    set_text_x(&leadboard_Text, WINDOW_WIDTH / 2 - get_text_w(&leadboard_Text) / 2);
-    set_text_y(&leadboard_Text, (WINDOW_HEIGHT / 9) * 4);
+    Text leaderboard_Text;
+    init_Text(&leaderboard_Text, RGB_WHITE, font, leaderboard_text, window);
+    set_text_x(&leaderboard_Text, WINDOW_WIDTH / 2 - get_text_w(&leaderboard_Text) / 2);
+    set_text_y(&leaderboard_Text, (WINDOW_HEIGHT / 9) * 4);
 
     // Exit Game
     Text exitGame_Text;
@@ -131,7 +131,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
         SDL_RenderCopy(window->renderer, background, NULL, &background_rect);
 
         mouse_hover(xMouse, yMouse, &newGame_Text);
-        mouse_hover(xMouse, yMouse, &leadboard_Text);
+        mouse_hover(xMouse, yMouse, &leaderboard_Text);
 
         mouse_hover(xMouse, yMouse, &exitGame_Text);
 
@@ -155,9 +155,10 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
                     quit = true;
                     *close_request = 1;
                 }
-                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&leadboard_Text)))
+                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&leaderboard_Text)))
                 {
-                    set_menu_texture_big(get_text_rectangle(&leadboard_Text), get_text_texture(&leadboard_Text));
+                    set_menu_texture_big(get_text_rectangle(&leaderboard_Text), get_text_texture(&leaderboard_Text));
+                    read_from_leaderboard();
                 }
             }
             if (e.type == SDL_QUIT)
@@ -168,7 +169,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
         }
         SDL_RenderCopy(window->renderer, get_text_texture(&main_Text), NULL, get_text_rectangle(&main_Text));
         SDL_RenderCopy(window->renderer, get_text_texture(&newGame_Text), NULL, get_text_rectangle(&newGame_Text));
-        SDL_RenderCopy(window->renderer, get_text_texture(&leadboard_Text), NULL, get_text_rectangle(&leadboard_Text));
+        SDL_RenderCopy(window->renderer, get_text_texture(&leaderboard_Text), NULL, get_text_rectangle(&leaderboard_Text));
         SDL_RenderCopy(window->renderer, get_text_texture(&exitGame_Text), NULL, get_text_rectangle(&exitGame_Text));
 
         SDL_RenderPresent(window->renderer);
@@ -187,16 +188,20 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
 
     SDL_Texture *background = IMG_LoadTexture(window->renderer, "../Assets/background_empty.png");
 
+    char player_path[500] = "../Assets/Player/";
+
     SDL_Rect background_rect;
     background_rect.x = 0;
     background_rect.y = 0;
     SDL_QueryTexture(background, NULL, NULL, &background_rect.w, &background_rect.h);
 
     char main_text[100] = "choose character";
+    char playButton_text[100] = "Play";
     SDL_Color RGB_WHITE = {255, 255, 255};
 
     // Icons
     Icon icons[4];
+    int player_count = 0;
 
     init_Icon(&icons[0], 0, RED, window, font);
     init_Icon(&icons[1], 1, BLUE, window, font);
@@ -207,7 +212,12 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
     Text main_Text;
     init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
     set_text_x(&main_Text, WINDOW_WIDTH / 2 - get_text_w(&main_Text) / 2);
-    set_text_y(&main_Text, (WINDOW_HEIGHT / 11));
+    set_text_y(&main_Text, (WINDOW_HEIGHT / 15));
+
+    Text playButton_Text;
+    init_Text(&playButton_Text, RGB_WHITE, main_font, playButton_text, window);
+    set_text_x(&playButton_Text, WINDOW_WIDTH / 2 - get_text_w(&playButton_Text) / 2);
+    set_text_y(&playButton_Text, (WINDOW_HEIGHT / 15) * 13);
 
     bool quit = false;
     SDL_Event e;
@@ -215,13 +225,19 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
 
     while (quit == false)
     {
+        player_count = 0;
         for (int i = 0; i < 4; i++)
         {
             mouse_hover(xMouse, yMouse, get_icon_player_arrow_left(&icons[i]));
             mouse_hover(xMouse, yMouse, get_icon_player_arrow_right(&icons[i]));
             mouse_hover(xMouse, yMouse, get_icon_icon_arrow_left(&icons[i]));
             mouse_hover(xMouse, yMouse, get_icon_icon_arrow_right(&icons[i]));
+            if (get_icon_type(&icons[i]) == PLAYER)
+            {
+                player_count += 1;
+            }
         }
+        mouse_hover(xMouse, yMouse, &playButton_Text);
 
         SDL_RenderClear(window->renderer);
 
@@ -239,43 +255,84 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
 
                     if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(get_icon_player_arrow_left(&icons[i]))))
                     {
-
+                        set_menu_texture_small(get_text_rectangle(get_icon_player_arrow_left(&icons[i])), get_text_texture(get_icon_player_arrow_left(&icons[i])));
+                        set_text_is_big(get_icon_player_arrow_left(&icons[i]), false);
                         if (get_icon_color(&icons[i]) + 1 > 3)
                         {
                             set_icon_color(&icons[i], 0);
                         }
                         else
                             set_icon_color(&icons[i], get_icon_color(&icons[i]) + 1);
-
-                        set_icon_player_texture(&icons[i], window);
                     }
                     if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(get_icon_player_arrow_right(&icons[i]))))
                     {
-
+                        set_menu_texture_small(get_text_rectangle(get_icon_player_arrow_right(&icons[i])), get_text_texture(get_icon_player_arrow_right(&icons[i])));
+                        set_text_is_big(get_icon_player_arrow_right(&icons[i]), false);
                         if (get_icon_color(&icons[i]) == 0)
                         {
                             set_icon_color(&icons[i], 3);
                         }
                         else
                             set_icon_color(&icons[i], get_icon_color(&icons[i]) - 1);
-
-                        set_icon_player_texture(&icons[i], window);
                     }
 
-                    // mouse_hover(xMouse, yMouse, get_icon_player_arrow_right(&icons[i]));
-                    // mouse_hover(xMouse, yMouse, get_icon_icon_arrow_left(&icons[i]));
-                    // mouse_hover(xMouse, yMouse, get_icon_icon_arrow_right(&icons[i]));
+                    if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(get_icon_icon_arrow_left(&icons[i]))))
+                    {
+                        set_menu_texture_small(get_text_rectangle(get_icon_icon_arrow_left(&icons[i])), get_text_texture(get_icon_icon_arrow_left(&icons[i])));
+                        set_text_is_big(get_icon_icon_arrow_left(&icons[i]), false);
+                        if (get_icon_type(&icons[i]) + 1 > 2)
+                        {
+                            set_icon_type(&icons[i], 0);
+                            if (player_count >= 2)
+                            {
+                                set_icon_type(&icons[i], 1);
+                            }
+                        }
+                        else
+                            set_icon_type(&icons[i], get_icon_type(&icons[i]) + 1);
+                    }
+                    if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(get_icon_icon_arrow_right(&icons[i]))))
+                    {
+                        set_menu_texture_small(get_text_rectangle(get_icon_icon_arrow_right(&icons[i])), get_text_texture(get_icon_icon_arrow_right(&icons[i])));
+                        set_text_is_big(get_icon_icon_arrow_right(&icons[i]), false);
+                        if (get_icon_type(&icons[i]) == 0)
+                        {
+                            set_icon_type(&icons[i], 2);
+                        }
+                        else
+                            set_icon_type(&icons[i], get_icon_type(&icons[i]) - 1);
 
-                    // if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&first_arrow_left)))
-                    // {
-                    //     set_menu_texture_small(get_text_rectangle(&first_arrow_left), get_text_texture(&first_arrow_left));
-                    //     quit = true;
-                    // }
-                    // if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&first_arrow_right)))
-                    // {
-                    //     set_menu_texture_small(get_text_rectangle(&first_arrow_right), get_text_texture(&first_arrow_right));
-                    //     quit = true;
-                    // }
+                        if (get_icon_type(&icons[i]) == 0 && player_count >= 2)
+                        {
+                            set_icon_type(&icons[i], 2);
+                        }
+                    }
+
+                    set_icon_player_texture(&icons[i], window);
+                    set_icon_texture(&icons[i], window);
+                }
+
+                // Play button
+                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&playButton_Text)))
+                {
+                    set_menu_texture_small(get_text_rectangle(&playButton_Text), get_text_texture(&playButton_Text));
+                    quit = true;
+
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (get_icon_type(&icons[i]) == PLAYER)
+                        {
+                            Player player;
+                            init_player(&player, window, i, player_path, get_icon_color(&icons[i]), 0);
+                            add_player(players, &player);
+                        }
+                        else if (get_icon_type(&icons[i]) == ROBOT)
+                        {
+                            Player player;
+                            init_player(&player, window, i, player_path, get_icon_color(&icons[i]), 1);
+                            add_player(players, &player);
+                        }
+                    }
                 }
             }
             if (e.type == SDL_QUIT)
@@ -288,15 +345,19 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
         SDL_RenderCopy(window->renderer, background, NULL, &background_rect);
 
         SDL_RenderCopy(window->renderer, get_text_texture(&main_Text), NULL, get_text_rectangle(&main_Text));
+        SDL_RenderCopy(window->renderer, get_text_texture(&playButton_Text), NULL, get_text_rectangle(&playButton_Text));
 
         for (int i = 0; i < 4; i++)
         {
+            if (get_icon_type(&icons[i]) != NOTHING)
+            {
+                SDL_RenderCopy(window->renderer, get_icon_player_texture(&icons[i]), NULL, get_icon_player_rectangle(&icons[i]));
+            }
             SDL_RenderCopy(window->renderer, get_text_texture(get_icon_player_arrow_left(&icons[i])), NULL, get_text_rectangle(get_icon_player_arrow_left(&icons[i])));
             SDL_RenderCopy(window->renderer, get_text_texture(get_icon_player_arrow_right(&icons[i])), NULL, get_text_rectangle(get_icon_player_arrow_right(&icons[i])));
             SDL_RenderCopy(window->renderer, get_text_texture(get_icon_icon_arrow_left(&icons[i])), NULL, get_text_rectangle(get_icon_icon_arrow_left(&icons[i])));
             SDL_RenderCopy(window->renderer, get_text_texture(get_icon_icon_arrow_right(&icons[i])), NULL, get_text_rectangle(get_icon_icon_arrow_right(&icons[i])));
             SDL_RenderCopy(window->renderer, get_icon_texture(&icons[i]), NULL, get_icon_rectangle(&icons[i]));
-            SDL_RenderCopy(window->renderer, get_icon_player_texture(&icons[i]), NULL, get_icon_player_rectangle(&icons[i]));
         }
 
         SDL_RenderPresent(window->renderer);
@@ -437,6 +498,16 @@ void set_icon_w(Icon *icon, int w)
 void set_icon_h(Icon *icon, int h)
 {
     icon->rect.h = h;
+}
+
+void set_icon_player_w(Icon *icon, int w)
+{
+    icon->player_icon_rect.w = w;
+}
+
+void set_icon_player_h(Icon *icon, int h)
+{
+    icon->player_icon_rect.h = h;
 }
 
 void set_icon_texture(Icon *icon, SDL_Context *window)

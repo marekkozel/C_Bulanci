@@ -26,8 +26,24 @@
 
 void read_keys(int *close_request, SDL_Context *window, Players *players, dynarray *projectils, double timer)
 {
-    Player *player1 = &players->players[0];
-    Player *player2 = &players->players[1];
+    int first_player = 0;
+    Player *player1 = malloc(sizeof(Player));
+    Player *player2 = malloc(sizeof(Player));
+
+    for (int i = 0; i < players->count_players; i++)
+    {
+        Player *player = &players->players[i];
+        if (get_player_type(player) == 0 && first_player == 0)
+        {
+            player1 = player;
+            first_player = 1;
+        }
+        else if (get_player_type(player) == 0 && first_player == 1)
+        {
+            player2 = player;
+        }
+    }
+
     SDL_Event event;
 
     while (SDL_PollEvent(&event))

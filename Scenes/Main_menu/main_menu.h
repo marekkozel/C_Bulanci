@@ -14,6 +14,7 @@
 #include <assert.h>
 #include "sdl.h"
 #include "player.h"
+#include "Scenes/Leaderboard/leaderboard.h"
 
 typedef struct
 {
@@ -28,8 +29,8 @@ typedef struct
 
 typedef enum
 {
-    ROBOT,
     PLAYER,
+    ROBOT,
     NOTHING
 } Icon_type;
 
@@ -98,6 +99,10 @@ void set_icon_y(Icon *icon, double y);
 void set_icon_w(Icon *icon, int w);
 
 void set_icon_h(Icon *icon, int h);
+
+void set_icon_player_w(Icon *icon, int w);
+
+void set_icon_player_h(Icon *icon, int h);
 
 void set_icon_texture(Icon *icon, SDL_Context *window);
 
