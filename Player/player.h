@@ -61,7 +61,7 @@ void add_player(Players *players, Player *player);
 
 void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type);
 
-void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, double time);
+void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, SDL_Context *window, double time);
 
 void respawn_player(Players *players, Player *player, Obstacles *obsatcles);
 
@@ -74,9 +74,7 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles);
 
 void detect_power_up_collision(Player *player, dynarray *array, double time);
 
-void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles);
-
-void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer);
+void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time);
 
 void add_player_score(Player *player, int score);
 

@@ -1,7 +1,4 @@
-#pragma once
 
-#include "sdl.h"
-#include "Player/player.h"
 #include "keybinds.h"
 
 // typedef enum

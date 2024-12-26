@@ -26,7 +26,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 10;
+    int sec = 90;
 
     int m = 0;
     int s = 0;
@@ -145,7 +145,7 @@ int main()
         for (int i = 0; i < players.count_players; i++)
         {
             animate_player(&players.players[i], &window, player_path);
-            move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils, miliseconds_time);
+            move_player(&players.players[i], deltaTime, &players, &obstacles, &power_ups, &projectils, &window, miliseconds_time);
 
             SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, &players.players[i].rectangle);
 
@@ -191,8 +191,8 @@ int main()
             projectil = dynarray_get(&projectils, i);
             move_projectil(projectil, deltaTime);
             SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
-            projectil_collision(&projectils, &obstacles, projectil);
-            destruct_projectil(&projectils, projectil, miliseconds_time);
+            projectil_collision(&projectils, &obstacles, projectil, &window, miliseconds_time);
+            destroy_projectil(&projectils, projectil, miliseconds_time);
         }
 
         SDL_RenderPresent(window.renderer);

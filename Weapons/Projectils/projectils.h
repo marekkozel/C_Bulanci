@@ -31,9 +31,11 @@ void init_projectil(dynarray *projectils, SDL_Context *window, int id, int playe
 
 void move_projectil(Projectil *projectil, double delta_time);
 
-void destruct_projectil(dynarray *projectils, Projectil *projectil, double time);
+void destroy_projectil(dynarray *projectils, Projectil *projectil, double time);
 
-void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil);
+void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil, SDL_Context *window, double time);
+
+void rocket_explosion(dynarray *projectils, SDL_Context *window, int player_id, int x, int y, double time);
 
 void set_projectil_id(Projectil *projectil, int id);
 

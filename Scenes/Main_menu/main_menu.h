@@ -58,6 +58,8 @@ void start_main_menu(Players *palyers, SDL_Context *window, int *close_request, 
 
 void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context *window, int *close_request);
 
+void leaderboard(Players *players, SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font);
+
 void mouse_hover(int xMouse, int yMouse, Text *text);
 
 bool is_mouse_hover(int xMouse, int yMouse, SDL_Rect *rect);

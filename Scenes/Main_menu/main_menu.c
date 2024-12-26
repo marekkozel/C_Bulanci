@@ -158,7 +158,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
                 if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&leaderboard_Text)))
                 {
                     set_menu_texture_big(get_text_rectangle(&leaderboard_Text), get_text_texture(&leaderboard_Text));
-                    read_from_leaderboard();
+                    leaderboard(players, window, close_request, font, main_font);
                 }
             }
             if (e.type == SDL_QUIT)
@@ -359,6 +359,106 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
             SDL_RenderCopy(window->renderer, get_text_texture(get_icon_icon_arrow_right(&icons[i])), NULL, get_text_rectangle(get_icon_icon_arrow_right(&icons[i])));
             SDL_RenderCopy(window->renderer, get_icon_texture(&icons[i]), NULL, get_icon_rectangle(&icons[i]));
         }
+
+        SDL_RenderPresent(window->renderer);
+    }
+    SDL_Delay(200);
+}
+
+void leaderboard(Players *players, SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font)
+{
+
+    bool play1 = false;
+    bool is_new_game = false;
+
+    SDL_Texture *background = IMG_LoadTexture(window->renderer, "../Assets/background_empty.png");
+
+    SDL_Rect background_rect;
+    background_rect.x = 0;
+    background_rect.y = 0;
+    SDL_QueryTexture(background, NULL, NULL, &background_rect.w, &background_rect.h);
+
+    char main_text[100] = "CUBES BATTLE";
+    char newGame_text[100] = "New Game";
+    char leaderboard_text[100] = "Leaderboard";
+    char exitGame_text[100] = "Exit Game";
+
+    SDL_Color RGB_WHITE = {255, 255, 255};
+
+    Text main_Text;
+    init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
+    set_text_x(&main_Text, WINDOW_WIDTH / 2 - get_text_w(&main_Text) / 2);
+    set_text_y(&main_Text, (WINDOW_HEIGHT / 9));
+
+    // New Game
+    Text newGame_Text;
+    init_Text(&newGame_Text, RGB_WHITE, font, newGame_text, window);
+    set_text_x(&newGame_Text, WINDOW_WIDTH / 2 - get_text_w(&newGame_Text) / 2);
+    set_text_y(&newGame_Text, (WINDOW_HEIGHT / 9) * 3);
+
+    // Leadboard
+    Text leaderboard_Text;
+    init_Text(&leaderboard_Text, RGB_WHITE, font, leaderboard_text, window);
+    set_text_x(&leaderboard_Text, WINDOW_WIDTH / 2 - get_text_w(&leaderboard_Text) / 2);
+    set_text_y(&leaderboard_Text, (WINDOW_HEIGHT / 9) * 4);
+
+    // Exit Game
+    Text exitGame_Text;
+    init_Text(&exitGame_Text, RGB_WHITE, font, exitGame_text, window);
+    set_text_x(&exitGame_Text, WINDOW_WIDTH / 2 - get_text_w(&exitGame_Text) / 2);
+    set_text_y(&exitGame_Text, (WINDOW_HEIGHT / 9) * 5);
+
+    bool quit = false;
+    SDL_Event e;
+    int xMouse, yMouse;
+
+    while (quit == false)
+    {
+        SDL_RenderClear(window->renderer);
+
+        SDL_RenderCopy(window->renderer, background, NULL, &background_rect);
+
+        mouse_hover(xMouse, yMouse, &newGame_Text);
+        mouse_hover(xMouse, yMouse, &leaderboard_Text);
+
+        mouse_hover(xMouse, yMouse, &exitGame_Text);
+
+        while (SDL_PollEvent(&e) != 0)
+        {
+            if (e.type == SDL_MOUSEMOTION)
+            {
+                SDL_GetMouseState(&xMouse, &yMouse);
+            }
+            if (e.type == SDL_MOUSEBUTTONDOWN)
+            {
+                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&newGame_Text)))
+                {
+                    set_menu_texture_small(get_text_rectangle(&newGame_Text), get_text_texture(&newGame_Text));
+                    quit = true;
+                    is_new_game = true;
+                }
+                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&exitGame_Text)))
+                {
+                    set_menu_texture_small(get_text_rectangle(&exitGame_Text), get_text_texture(&exitGame_Text));
+                    quit = true;
+                    *close_request = 1;
+                }
+                if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&leaderboard_Text)))
+                {
+                    set_menu_texture_big(get_text_rectangle(&leaderboard_Text), get_text_texture(&leaderboard_Text));
+                    read_from_leaderboard();
+                }
+            }
+            if (e.type == SDL_QUIT)
+            {
+                quit = true;
+                *close_request = 1;
+            }
+        }
+        SDL_RenderCopy(window->renderer, get_text_texture(&main_Text), NULL, get_text_rectangle(&main_Text));
+        SDL_RenderCopy(window->renderer, get_text_texture(&newGame_Text), NULL, get_text_rectangle(&newGame_Text));
+        SDL_RenderCopy(window->renderer, get_text_texture(&leaderboard_Text), NULL, get_text_rectangle(&leaderboard_Text));
+        SDL_RenderCopy(window->renderer, get_text_texture(&exitGame_Text), NULL, get_text_rectangle(&exitGame_Text));
 
         SDL_RenderPresent(window->renderer);
     }
