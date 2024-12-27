@@ -20,6 +20,7 @@ SDL_Context sdl_context_init(const char *window_name, int width, int height)
         SDL_Quit();
         exit(1);
     }
+    SDL_SetWindowResizable(window, SDL_FALSE);
 
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (!renderer)
@@ -29,6 +30,7 @@ SDL_Context sdl_context_init(const char *window_name, int width, int height)
         SDL_Quit();
         exit(1);
     }
+    SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
     return (SDL_Context){
         .window = window,
@@ -38,6 +40,4 @@ void sdl_context_free(SDL_Context *ctx)
 {
     SDL_DestroyRenderer(&ctx->renderer);
     SDL_DestroyWindow(&ctx->window);
-
-    SDL_Quit();
 }

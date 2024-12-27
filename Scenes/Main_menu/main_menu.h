@@ -58,7 +58,11 @@ void start_main_menu(Players *palyers, SDL_Context *window, int *close_request, 
 
 void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context *window, int *close_request);
 
-void leaderboard(Players *players, SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font);
+void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font);
+
+void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, int score);
+
+void center_rectangle_x(SDL_Texture *texture, SDL_Rect *rect);
 
 void mouse_hover(int xMouse, int yMouse, Text *text);
 
@@ -67,6 +71,8 @@ bool is_mouse_hover(int xMouse, int yMouse, SDL_Rect *rect);
 void set_menu_texture_big(SDL_Rect *rect, SDL_Texture *texture);
 
 void set_menu_texture_small(SDL_Rect *rect, SDL_Texture *texture);
+
+void destroy_text(Text *text);
 
 void set_text_rectangle(Text *text, SDL_Rect *rect);
 

@@ -17,6 +17,7 @@
 #include "Weapons/Projectils/projectils.h"
 #include "Scenes/Main_menu/main_menu.h"
 #include "Scenes/Leaderboard/leaderboard.h"
+#include "Config/text_input.h"
 
 #define WINDOW_WIDTH (1920)
 #define WINDOW_HEIGHT (1080)
@@ -26,7 +27,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 90;
+    int sec = 10;
 
     int m = 0;
     int s = 0;
@@ -41,6 +42,30 @@ int main()
 
     SDL_Context window = sdl_window_setup();
 
+    int *close_request = (int *)malloc(sizeof(int));
+    *close_request = 0;
+
+    // player section
+    Players players;
+    init_players(&players);
+
+    char player_path[500] = "../Assets/Player/";
+
+    // Font
+    TTF_Init();
+    TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 45);
+    assert(font);
+    TTF_Font *main_font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 64);
+    assert(font);
+
+    char score_text[100] = "Score: 0";
+    char time_text[100] = "01:30";
+
+    SDL_Color RGB_WHITE = {255, 255, 255};
+
+    // Main menu
+    start_main_menu(&players, &window, close_request, font, main_font);
+
     // World section
     SDL_Texture *background_text = IMG_LoadTexture(window.renderer, "../Assets/background.png");
     assert(background_text);
@@ -51,14 +76,8 @@ int main()
     background_rect.y = 0;
 
     Obstacles obstacles;
-    init_obstacles(&obstacles, 1);
+    init_obstacles(&obstacles, 2);
     set_obstacles(&obstacles, &window);
-
-    // player section
-    Players players;
-    init_players(&players);
-
-    char player_path[500] = "../Assets/Player/";
 
     // Power_up section
     dynarray power_ups;
@@ -68,29 +87,11 @@ int main()
     dynarray projectils;
     init_projectils(&projectils);
 
-    // Font
-    TTF_Init();
-    TTF_Font *font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 45);
-    assert(font);
-    TTF_Font *main_font = TTF_OpenFont("../Assets/Fonts/Venite.ttf", 65);
-    assert(font);
-
-    char score_text[100] = "Score: 0";
-    char time_text[100] = "01:30";
-
-    SDL_Color RGB_WHITE = {255, 255, 255};
-
     SDL_Surface *score_surface;
     SDL_Texture *score_texture;
 
     SDL_Surface *time_surface = TTF_RenderText_Solid(font, time_text, RGB_WHITE);
     SDL_Texture *time_texture = SDL_CreateTextureFromSurface(window.renderer, time_surface);
-
-    int *close_request = (int *)malloc(sizeof(int));
-    *close_request = 0;
-
-    // Main menu
-    start_main_menu(&players, &window, close_request, font, main_font);
 
     while (!*close_request)
     {
@@ -116,21 +117,20 @@ int main()
             if (sec - seconds_timer + 2 <= 0)
             {
                 int max_score_index = 0;
+                int max_score = 0;
                 for (int i = 0; i < players.count_players; i++)
                 {
-                    if (get_player_score(&players.players[i]) > max_score_index)
+                    if (get_player_score(&players.players[i]) > max_score)
                     {
                         max_score_index = i;
+                        max_score = get_player_score(&players.players[i]);
                     }
                 }
-                write_to_leaderboard(&players.players[max_score_index], "player1");
+                username_input_screen(&window, close_request, font, main_font, players.players[max_score_index].score);
                 *close_request = 1;
-                read_from_leaderboard();
+                leaderboard(&window, close_request, font, main_font);
             }
         }
-
-        SDL_Rect time_rect = {.x = WINDOW_WIDTH / 2 - time_surface->w / 2, .y = 40, time_surface->w, time_surface->h};
-        SDL_RenderCopy(window.renderer, time_texture, NULL, &time_rect);
 
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
@@ -141,7 +141,34 @@ int main()
 
         read_keys(close_request, &window, &players, &projectils, miliseconds_time);
 
+        // Obstacles render
+        for (int i = 0; i < obstacles.count_obstacles; i++)
+        {
+            SDL_RenderCopy(window.renderer, obstacles.obstacles[i].texture, NULL, obstacles.obstacles[i].rectangle);
+        }
+
+        // Power_ups render
+        for (int i = 0; i < power_ups.size; i++)
+        {
+            Power_up *power_up;
+            power_up = dynarray_get(&power_ups, i);
+            SDL_RenderCopy(window.renderer, power_up->texture, NULL, power_up->rectangle);
+        }
+
+        // Projectils render
+        for (int i = 0; i < projectils.size; i++)
+        {
+            Projectil *projectil;
+            projectil = dynarray_get(&projectils, i);
+            move_projectil(projectil, deltaTime);
+            SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
+            projectil_collision(&projectils, &obstacles, projectil, &window, miliseconds_time);
+            destroy_projectil(&projectils, projectil, miliseconds_time);
+        }
+
         first_player = 0;
+
+        // Player render
         for (int i = 0; i < players.count_players; i++)
         {
             animate_player(&players.players[i], &window, player_path);
@@ -149,6 +176,7 @@ int main()
 
             SDL_RenderCopy(window.renderer, players.players[i].texture, NULL, &players.players[i].rectangle);
 
+            // Score render
             if (get_player_type(&players.players[i]) == 0)
             {
                 sprintf(score_text, "Score : %d", get_player_score(&players.players[i]));
@@ -173,27 +201,9 @@ int main()
             }
         }
 
-        for (int i = 0; i < obstacles.count_obstacles; i++)
-        {
-            SDL_RenderCopy(window.renderer, obstacles.obstacles[i].texture, NULL, obstacles.obstacles[i].rectangle);
-        }
-
-        for (int i = 0; i < power_ups.size; i++)
-        {
-            Power_up *power_up;
-            power_up = dynarray_get(&power_ups, i);
-            SDL_RenderCopy(window.renderer, power_up->texture, NULL, power_up->rectangle);
-        }
-
-        for (int i = 0; i < projectils.size; i++)
-        {
-            Projectil *projectil;
-            projectil = dynarray_get(&projectils, i);
-            move_projectil(projectil, deltaTime);
-            SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
-            projectil_collision(&projectils, &obstacles, projectil, &window, miliseconds_time);
-            destroy_projectil(&projectils, projectil, miliseconds_time);
-        }
+        // Time render
+        SDL_Rect time_rect = {.x = WINDOW_WIDTH / 2 - time_surface->w / 2, .y = 40, time_surface->w, time_surface->h};
+        SDL_RenderCopy(window.renderer, time_texture, NULL, &time_rect);
 
         SDL_RenderPresent(window.renderer);
 
@@ -202,10 +212,12 @@ int main()
         miliseconds_time += (currTime - startTime) / 1000.0; // Convert to seconds.
     }
 
-    TTF_CloseFont(font);
-    TTF_CloseFont(main_font);
+    // TTF_CloseFont(font);
+    // TTF_CloseFont(main_font);
     TTF_Quit();
     sdl_context_free(&window);
+
+    SDL_Quit();
 
     return 0;
 }

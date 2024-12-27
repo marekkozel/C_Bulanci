@@ -31,7 +31,8 @@
 			"assert.h": "c",
 			"math.h": "c",
 			"string.h": "c",
-			"leadboard.h": "c"
+			"leadboard.h": "c",
+			"cmath": "c"
 		}
 	}
 }
