@@ -14,6 +14,7 @@ typedef struct
 typedef struct
 {
     int count_obstacles;
+    int capacity;
     Obstacle *obstacles;
 } Obstacles;
 
@@ -21,7 +22,7 @@ void set_obstacles(Obstacles *obstacles, SDL_Context *window);
 
 void init_obstacles(Obstacles *obstacles, int size);
 
-void init_obstacle(SDL_Context *window, Obstacles *obstacles, Obstacle *obstacle, int id, char tex[100], int x, int y);
+void init_obstacle(SDL_Context *window, Obstacles *obstacles, int id, char tex[100], int x, int y);
 
 void set_obstacle_id(Obstacle *obstacle, int id);
 

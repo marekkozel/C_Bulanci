@@ -27,7 +27,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 10;
+    int sec = 90;
 
     int m = 0;
     int s = 0;
@@ -76,7 +76,7 @@ int main()
     background_rect.y = 0;
 
     Obstacles obstacles;
-    init_obstacles(&obstacles, 2);
+    init_obstacles(&obstacles, 6);
     set_obstacles(&obstacles, &window);
 
     // Power_up section

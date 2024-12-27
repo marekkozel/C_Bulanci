@@ -42,7 +42,7 @@ void init_power_up(dynarray *power_ups, SDL_Context *window, int id, int x, int 
 
 void spawn_power_up(dynarray *power_ups, SDL_Context *window, int timer)
 {
-    if (timer % 10 == 0)
+    if (timer % 5 == 0)
     {
 
         char path[500] = "../Assets/Power_ups/";

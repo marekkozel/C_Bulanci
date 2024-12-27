@@ -48,6 +48,7 @@ typedef struct
     Color color;
     int health;
     int type;
+    double dead_time;
 } Player;
 
 typedef struct
@@ -73,6 +74,8 @@ void detect_boarders_collisions(Player *Player);
 void detect_obstacles_collisions(Player *player, Obstacles *obstacles);
 
 void detect_power_up_collision(Player *player, dynarray *array, double time);
+
+void check_power_up_time(Player *player, double time);
 
 void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time);
 
@@ -103,6 +106,8 @@ void set_player_color(Player *player, Color color);
 void set_player_power(Player *player, Power power);
 void set_player_power_time(Player *player, double time);
 
+void set_player_dead_time(Player *player, double time);
+
 int get_player_id(Player *player);
 int get_player_type(Player *player);
 double get_player_velocity_x(Player *player);
@@ -122,4 +127,8 @@ Color get_player_color(Player *player);
 
 Power get_player_power(Player *player);
 
+double get_player_power_time(Player *player);
+
 int get_player_score(Player *player);
+
+double get_player_dead_time(Player *player);

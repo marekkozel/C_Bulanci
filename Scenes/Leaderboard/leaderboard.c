@@ -25,7 +25,6 @@ Data *read_from_leaderboard(int *row_count)
     for (int i = 0; i < *row_count; i++)
     {
         fread(&data[i], sizeof(Data), 1, leadboard_text); // Write the player data to the file
-        printf("%s, %d\n", data[i].name, data[i].score);
     }
 
     fclose(leadboard_text);

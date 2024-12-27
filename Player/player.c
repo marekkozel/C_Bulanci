@@ -47,6 +47,13 @@ void init_player(Player *player, SDL_Context *window, int id, char path[100], Co
 
 void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, SDL_Context *window, double time)
 {
+    int respawn_timer = 3;
+    if (get_player_dead_time(player) + respawn_timer < time && get_player_heath(player) <= 0)
+    {
+        respawn_player(players, player, obstacles);
+    }
+
+    check_power_up_time(player, time);
 
     set_player_multiplier_x(player, 1);
     set_player_multiplier_y(player, 1);
@@ -258,6 +265,15 @@ void detect_power_up_collision(Player *player, dynarray *power_ups, double time)
     }
 }
 
+void check_power_up_time(Player *player, double time)
+{
+    int power_up_time = 8;
+    if (get_player_power_time(player) + power_up_time < time)
+    {
+        set_player_power(player, GUN);
+    }
+}
+
 void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time)
 {
     for (int i = 0; i < projectils->size; i++)
@@ -270,7 +286,7 @@ void detect_projectils_collision(Players *players, Player *player, dynarray *pro
 
             if (get_projectil_id(projectil) == ROCKET)
             {
-                rocket_explosion(projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+                rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
             }
             else if (get_projectil_id(projectil) == GUN)
             {
@@ -292,7 +308,7 @@ void detect_projectils_collision(Players *players, Player *player, dynarray *pro
             {
                 set_player_w(player, 0);
                 set_player_h(player, 0);
-                respawn_player(players, player, obstacles);
+                set_player_dead_time(player, time);
                 for (int i = 0; i < players->count_players; i++)
                 {
                     if (get_player_id(&players->players[i]) == get_projectil_player_id(projectil))
@@ -413,6 +429,8 @@ void set_player_texture(Player *player, SDL_Context *window, char *path)
     SDL_Texture *tex = IMG_LoadTexture(window->renderer, image_path);
     assert(tex);
 
+    SDL_SetTextureAlphaMod(tex, 255 * get_player_heath(player) / 100);
+
     player->texture = tex;
 }
 
@@ -463,6 +481,12 @@ void set_player_power_time(Player *player, double time)
     player->power_time = time;
 }
 
+void set_player_dead_time(Player *player, double time)
+{
+    player->dead_time = time;
+}
+
+// Getters
 int get_player_id(Player *player)
 {
     return player->id;
@@ -546,4 +570,9 @@ double get_player_power_time(Player *player)
 int get_player_score(Player *player)
 {
     return player->score;
+}
+
+double get_player_dead_time(Player *player)
+{
+    return player->dead_time;
 }

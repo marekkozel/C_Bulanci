@@ -74,11 +74,11 @@ void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *
 {
     for (int i = 0; i < obstacles->count_obstacles; i++)
     {
-        if (SDL_HasIntersection(projectil->rectangle, obstacles->obstacles[i].rectangle))
+        if (SDL_HasIntersection(projectil->rectangle, obstacles->obstacles[i].rectangle) && get_obstacle_id(&obstacles->obstacles[i]) != 1)
         {
             if (get_projectil_id(projectil) == ROCKET)
             {
-                rocket_explosion(projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+                rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
             }
             set_projectil_w(projectil, 0);
             set_projectil_h(projectil, 0);
@@ -93,7 +93,7 @@ void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *
         {
             if (get_projectil_id(projectil) == ROCKET)
             {
-                rocket_explosion(projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+                rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
             }
             set_projectil_w(projectil, 0);
             set_projectil_h(projectil, 0);
@@ -101,10 +101,25 @@ void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *
             set_projectil_h(another_projectil, 0);
         }
     }
+    if (get_projectil_id(projectil) == ROCKET && get_projectil_w(projectil) != 0)
+    {
+        if (get_projectil_x(projectil) <= 0)
+            rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+        if (get_projectil_y(projectil) <= 0)
+            rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+
+        if (get_projectil_x(projectil) >= WINDOW_WIDTH - get_projectil_w(projectil))
+            rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+        if (get_projectil_y(projectil) >= WINDOW_HEIGHT - get_projectil_h(projectil))
+            rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+    }
 }
 
-void rocket_explosion(dynarray *projectils, SDL_Context *window, int player_id, int x, int y, double time)
+void rocket_explosion(Projectil *projectil, dynarray *projectils, SDL_Context *window, int player_id, int x, int y, double time)
 {
+    set_projectil_w(projectil, 0);
+    set_projectil_h(projectil, 0);
+
     char path[100] = "../Assets/Projectils/bullet.png";
     init_projectil(projectils, window, 0, player_id, x, y, 1000, 1, 1, time, 1, path);
     init_projectil(projectils, window, 0, player_id, x, y, 1000, 1, 0, time, 1, path);
