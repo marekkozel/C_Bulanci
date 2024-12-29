@@ -481,7 +481,7 @@ void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Fo
     SDL_Delay(200);
 }
 
-void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, int score)
+void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, Player *player)
 {
     bool play1 = false;
     bool is_new_game = false;
@@ -497,17 +497,73 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
     SDL_QueryTexture(background, NULL, NULL, &background_rect.w, &background_rect.h);
 
     char main_text[100] = "Type in your username:";
+    char winner_text[200] = "";
     char continue_text[100] = "Continue";
+    char color_text[100] = "";
+    char player_text[100] = "";
+    char player_path[500] = "../Assets/Player/";
 
     char *input_text = (char *)malloc(max_text_length * sizeof(char));
     memset(input_text, 0, max_text_length);
 
     SDL_Color RGB_WHITE = {255, 255, 255};
 
+    // Text main_Text;
+    // init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
+    // set_text_x(&main_Text, WINDOW_WIDTH / 2 - get_text_w(&main_Text) / 2);
+    // set_text_y(&main_Text, (WINDOW_HEIGHT / 13));
+
+    switch (player->color)
+    {
+    case RED:
+        strcpy(color_text, "RED");
+        break;
+    case BLUE:
+        strcpy(color_text, "BLUE");
+        break;
+    case GREEN:
+        strcpy(color_text, "GREEN");
+        break;
+    case ORANGE:
+        strcpy(color_text, "ORANGE");
+        break;
+    default:
+        strcpy(color_text, "RED");
+        break;
+    }
+    switch (player->type)
+    {
+    case 0:
+        strcpy(player_text, "player");
+        break;
+    case 1:
+        strcpy(player_text, "bot");
+        break;
+    default:
+        strcpy(player_text, "player");
+        break;
+    }
+
+    sprintf(winner_text, "The %s %s wins, with score: %d.", color_text, player_text, get_player_score(player));
+
+    Text winner_Text;
+    init_Text(&winner_Text, RGB_WHITE, main_font, winner_text, window);
+    set_text_x(&winner_Text, WINDOW_WIDTH / 2 - get_text_w(&winner_Text) / 2);
+    set_text_y(&winner_Text, (WINDOW_HEIGHT / 13));
+
+    SDL_Rect player_rectangle;
+    set_player_texture(player, window, player_path);
+    SDL_SetTextureAlphaMod(get_player_texture(player), 255);
+    SDL_QueryTexture(get_player_texture(player), NULL, NULL, &player_rectangle.w, &player_rectangle.h);
+    player_rectangle.w *= 5;
+    player_rectangle.h *= 5;
+    player_rectangle.x = WINDOW_WIDTH / 2 - player_rectangle.w / 2;
+    player_rectangle.y = (WINDOW_HEIGHT / 13) * 3;
+
     Text main_Text;
-    init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
+    init_Text(&main_Text, RGB_WHITE, font, main_text, window);
     set_text_x(&main_Text, WINDOW_WIDTH / 2 - get_text_w(&main_Text) / 2);
-    set_text_y(&main_Text, (WINDOW_HEIGHT / 13));
+    set_text_y(&main_Text, (WINDOW_HEIGHT / 13 * 6));
 
     Text continue_Text;
     init_Text(&continue_Text, RGB_WHITE, main_font, continue_text, window);
@@ -518,7 +574,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
     SDL_Texture *text_texture = NULL;
     SDL_Rect text_rectangle;
     text_rectangle.x = WINDOW_WIDTH / 2;
-    text_rectangle.y = WINDOW_HEIGHT / 2;
+    text_rectangle.y = (WINDOW_HEIGHT / 13) * 8;
 
     bool quit = false;
     SDL_Event e;
@@ -553,7 +609,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
                 quit = true;
                 *close_request = 1;
             }
-            if (e.type == SDL_KEYDOWN && text_length > 0)
+            if (e.type == SDL_KEYDOWN && text_length > 0 && get_player_type(player) == 0)
             {
                 if (e.key.keysym.sym == SDLK_BACKSPACE)
                 {
@@ -565,7 +621,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
                     center_rectangle_x(text_texture, &text_rectangle);
                 }
             }
-            if (e.type == SDL_TEXTINPUT && text_length < max_text_length)
+            if (e.type == SDL_TEXTINPUT && text_length < max_text_length && get_player_type(player) == 0)
             {
                 text_length++;
                 if (*e.text.text > 1 && *e.text.text < 127)
@@ -577,14 +633,16 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
                 center_rectangle_x(text_texture, &text_rectangle);
             }
         }
+        if (get_player_type(player) == 0)
+        {
 
-        // Rendering
+            // Rendering
+            SDL_RenderCopy(window->renderer, get_text_texture(&main_Text), NULL, get_text_rectangle(&main_Text));
+            SDL_RenderCopy(window->renderer, text_texture, NULL, &text_rectangle);
+        }
 
-        SDL_RenderDrawRect(window->renderer, &text_rectangle);
-
-        SDL_RenderCopy(window->renderer, get_text_texture(&main_Text), NULL, get_text_rectangle(&main_Text));
-        SDL_RenderCopy(window->renderer, text_texture, NULL, &text_rectangle);
-
+        SDL_RenderCopy(window->renderer, get_player_texture(player), NULL, &player_rectangle);
+        SDL_RenderCopy(window->renderer, get_text_texture(&winner_Text), NULL, get_text_rectangle(&winner_Text));
         SDL_RenderCopy(window->renderer, get_text_texture(&continue_Text), NULL, get_text_rectangle(&continue_Text));
 
         SDL_RenderPresent(window->renderer);
@@ -592,7 +650,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
 
     SDL_Delay(200);
 
-    write_to_leaderboard(score, input_text);
+    write_to_leaderboard(get_player_score(player), input_text);
 }
 
 void center_rectangle_x(SDL_Texture *texture, SDL_Rect *rect)

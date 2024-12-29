@@ -16,10 +16,12 @@
 #include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"
 #include "Weapons/Projectils/projectils.h"
+
 #include "Config/sdl.h"
 
-#define PLAYER_SPEED (450)
-#define FRICTION (150)
+#define PLAYER_SPEED (400)
+#define BOT_SPEED (350)
+#define FRICTION (100)
 
 typedef enum
 {
@@ -79,6 +81,8 @@ void check_power_up_time(Player *player, double time);
 
 void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time);
 
+void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer);
+
 void add_player_score(Player *player, int score);
 
 void set_player_score(Player *player, int score);
@@ -112,6 +116,7 @@ int get_player_id(Player *player);
 int get_player_type(Player *player);
 double get_player_velocity_x(Player *player);
 double get_player_velocity_y(Player *player);
+SDL_Rect *get_player_rectangle(Player *player);
 int get_player_x(Player *player);
 int get_player_y(Player *player);
 int get_player_w(Player *player);
@@ -132,3 +137,5 @@ double get_player_power_time(Player *player);
 int get_player_score(Player *player);
 
 double get_player_dead_time(Player *player);
+
+SDL_Texture *get_player_texture(Player *player);

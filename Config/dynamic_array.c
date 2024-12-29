@@ -1,8 +1,5 @@
 #include "dynamic_array.h"
 
-#include <stdlib.h>
-#include <string.h>
-
 void dynarray_init(dynarray *array, int initial_capacity)
 {
     array->items = (array_type *)malloc(sizeof(array_type) * initial_capacity);

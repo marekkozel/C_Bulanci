@@ -1,9 +1,17 @@
 #pragma once
 
-#include "Config/dynamic_array.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
-#include "Config/sdl.h"
-#include "Scenes/Obstacles/obstacles.h"
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_image.h>
+#include <time.h>
+#include <math.h>
+#include <assert.h>
+#include "sdl.h"
+#include "Config/dynamic_array.h"
 
 typedef enum
 {
@@ -44,6 +52,8 @@ void set_power_up_texture(Power_up *power_up, SDL_Context *window, char *texture
 int get_power_up_id(Power_up *power_up);
 
 int get_power_up_x(Power_up *power_up);
+
+int get_power_up_y(Power_up *power_up);
 
 int get_power_up_w(Power_up *power_up);
 

@@ -60,7 +60,7 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
 
 void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font);
 
-void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, int score);
+void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, Player *player);
 
 void center_rectangle_x(SDL_Texture *texture, SDL_Rect *rect);
 

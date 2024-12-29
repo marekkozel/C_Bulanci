@@ -8,10 +8,11 @@ include_directories(.)
 
 add_executable(game main.c
     Player/player.c
+    Player/bot.c
     Config/sdl.c
     Config/sdl.h
     Config/keybinds.c
-    Config/text_input.c
+
     Scenes/Obstacles/obstacles.c
     Config/dynamic_array.c
     Weapons/Power_ups/power_ups.c

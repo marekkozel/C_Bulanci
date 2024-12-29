@@ -1,7 +1,16 @@
 #pragma once
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
-#include "../Config/sdl.h"
+#include <SDL2/SDL_timer.h>
+#include <SDL2/SDL_image.h>
+#include <time.h>
+#include <math.h>
+#include <assert.h>
+#include "sdl.h"
 
 typedef struct
 {

@@ -1,17 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
-#include <time.h>
-#include <math.h>
-#include <assert.h>
-#include "sdl.h"
-#include "player.h"
+
 #include "power_ups.h"
-#include "Config/dynamic_array.h"
 
 void init_power_ups(dynarray *power_ups)
 {

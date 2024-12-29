@@ -1,27 +1,15 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
-#include <time.h>
-#include <math.h>
-#include <assert.h>
-#include "sdl.h"
+
 #include "obstacles.h"
 
 void set_obstacles(Obstacles *obstacles, SDL_Context *window)
 {
 
-    init_obstacle(window, obstacles, 1, "../Assets/Obstacles/long_pit_obstacle.png", 1250, 438);
-    init_obstacle(window, obstacles, 1, "../Assets/Obstacles/medium_pit_obstacle.png", 1600, 278);
-    init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle.png", 500, 200);
+    init_obstacle(window, obstacles, 1, "../Assets/Obstacles/long_pit_obstacle.png", 1150, 338);
+    init_obstacle(window, obstacles, 1, "../Assets/Obstacles/pit_obstacle.png", 1300, 178);
+    init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle.png", 500, 800);
     init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle_1.png", 440, 293);
     init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle_2.png", 380, 386);
-    init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle_3.png", 287, 436);
-    // init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle.png", 1470, 120);
-    // init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle_4.png", 1500, 213);
+    init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle_3.png", 157, 436);
 }
 
 void init_obstacles(Obstacles *obstacles, int size)

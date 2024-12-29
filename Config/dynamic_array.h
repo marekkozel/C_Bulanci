@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 #include "Config/sdl.h"
+#include <stdlib.h>
+#include <string.h>
 
 typedef void *array_type;
 

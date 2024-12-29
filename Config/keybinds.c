@@ -1,26 +1,6 @@
 
 #include "keybinds.h"
 
-// typedef enum
-// {
-//     DOWN_W,
-//     DOWN_A,
-//     DOWN_S,
-//     DOWN_D,
-//     UP_W,
-//     UP_A,
-//     UP_S,
-//     UP_D,
-//     DOWN_UP,
-//     DOWN_LEFT,
-//     DOWN_DOWN,
-//     DOWN_RIGHT,
-//     UP_UP,
-//     UP_LEFT,
-//     UP_DOWN,
-//     UP_RIGHT
-// } KeyPressed;
-
 void read_keys(int *close_request, SDL_Context *window, Players *players, dynarray *projectils, double timer)
 {
     int first_player = 0;
@@ -123,6 +103,10 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
 
                 break;
             case SDL_SCANCODE_KP_0:
+                spawn_projectil(player2, projectils, window, timer);
+
+                break;
+            case SDL_SCANCODE_RCTRL:
                 spawn_projectil(player2, projectils, window, timer);
 
                 break;

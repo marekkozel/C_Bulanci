@@ -17,7 +17,7 @@
 #include "Weapons/Projectils/projectils.h"
 #include "Scenes/Main_menu/main_menu.h"
 #include "Scenes/Leaderboard/leaderboard.h"
-#include "Config/text_input.h"
+#include "Player/bot.h"
 
 #define WINDOW_WIDTH (1920)
 #define WINDOW_HEIGHT (1080)
@@ -27,7 +27,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 90;
+    int sec = 200;
 
     int m = 0;
     int s = 0;
@@ -39,6 +39,7 @@ int main()
     double deltaTime = 0;
 
     int first_player = 0;
+    bool player_exist = false;
 
     SDL_Context window = sdl_window_setup();
 
@@ -126,7 +127,7 @@ int main()
                         max_score = get_player_score(&players.players[i]);
                     }
                 }
-                username_input_screen(&window, close_request, font, main_font, players.players[max_score_index].score);
+                username_input_screen(&window, close_request, font, main_font, &players.players[max_score_index]);
                 *close_request = 1;
                 leaderboard(&window, close_request, font, main_font);
             }
@@ -155,6 +156,15 @@ int main()
             SDL_RenderCopy(window.renderer, power_up->texture, NULL, power_up->rectangle);
         }
 
+        // Exist player
+        for (int i = 0; i < players.count_players; i++)
+        {
+            if (players.players[i].type == 0)
+            {
+                player_exist = true;
+            }
+        }
+
         // Projectils render
         for (int i = 0; i < projectils.size; i++)
         {
@@ -162,7 +172,8 @@ int main()
             projectil = dynarray_get(&projectils, i);
             move_projectil(projectil, deltaTime);
             SDL_RenderCopy(window.renderer, projectil->texture, NULL, projectil->rectangle);
-            projectil_collision(&projectils, &obstacles, projectil, &window, miliseconds_time);
+            projectil_collision(&projectils, &obstacles, projectil, &window, player_exist, miliseconds_time);
+
             destroy_projectil(&projectils, projectil, miliseconds_time);
         }
 
@@ -199,6 +210,11 @@ int main()
                 SDL_FreeSurface(score_surface);
                 SDL_DestroyTexture(score_texture);
             }
+
+            if (get_player_type(&players.players[i]) == 1)
+            {
+                bot_logic(&players, &players.players[i], &window, &projectils, &power_ups, &obstacles, miliseconds_time);
+            }
         }
 
         // Time render
@@ -212,8 +228,8 @@ int main()
         miliseconds_time += (currTime - startTime) / 1000.0; // Convert to seconds.
     }
 
-    // TTF_CloseFont(font);
-    // TTF_CloseFont(main_font);
+    TTF_CloseFont(font);
+    TTF_CloseFont(main_font);
     TTF_Quit();
     sdl_context_free(&window);
 

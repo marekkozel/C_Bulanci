@@ -10,8 +10,9 @@ void init_players(Players *players)
 void add_player(Players *players, Player *player)
 {
     // printf("\n%d\n", get_player_id(player));
+
+    players->players[players->count_players] = *player;
     players->count_players += 1;
-    players->players[get_player_id(player)] = *player;
 }
 
 void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type)
@@ -39,8 +40,28 @@ void init_player(Player *player, SDL_Context *window, int id, char path[100], Co
     SDL_QueryTexture(player->texture, NULL, NULL, &dest->w, &dest->h);
     dest->w *= 5;
     dest->h *= 5;
-    dest->x = 500 * id;
-    dest->y = 500 * id;
+    switch (id)
+    {
+    case 0:
+        dest->x = 181;
+        dest->y = 184;
+        break;
+    case 1:
+        dest->x = 181;
+        dest->y = 864;
+        break;
+    case 2:
+        dest->x = 1701;
+        dest->y = 184;
+        break;
+    case 3:
+        dest->x = 1701;
+        dest->y = 864;
+        break;
+
+    default:
+        break;
+    }
 
     set_player_rectangle(player, dest);
 }
@@ -140,6 +161,10 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
 
 void animate_player(Player *player, SDL_Context *window, char *path)
 {
+    if (get_player_texture(player) != NULL)
+    {
+        SDL_DestroyTexture(get_player_texture(player));
+    }
     set_player_texture(player, window, path);
 }
 
@@ -207,7 +232,7 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
 {
     for (int i = 0; i < obstacles->count_obstacles; i++)
     {
-        if (SDL_HasIntersection(&player->rectangle, obstacles->obstacles[i].rectangle))
+        if (SDL_HasIntersection(get_player_rectangle(player), obstacles->obstacles[i].rectangle))
         {
 
             if (get_player_y(player) < get_obstacle_y(&obstacles->obstacles[i]) + get_obstacle_h(&obstacles->obstacles[i]) - 10 && get_player_y(player) + get_player_h(player) > get_obstacle_y(&obstacles->obstacles[i]) + 10)
@@ -215,14 +240,14 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
 
                 if (get_player_x(player) <= get_obstacle_x(&obstacles->obstacles[i]) + get_obstacle_w(&obstacles->obstacles[i]) && get_player_x(player) > get_obstacle_x(&obstacles->obstacles[i]) + (get_obstacle_w(&obstacles->obstacles[i]) / 2))
                 {
-                    if (player->velocity_x < 0)
+                    if (get_player_velocity_x(player) < 0)
                     {
                         set_player_multiplier_x(player, 0);
                     }
                 }
                 else if (get_player_x(player) + get_player_w(player) >= get_obstacle_x(&obstacles->obstacles[i]))
                 {
-                    if (player->velocity_x > 0)
+                    if (get_player_velocity_x(player) > 0)
                     {
                         set_player_multiplier_x(player, 0);
                     }
@@ -232,14 +257,14 @@ void detect_obstacles_collisions(Player *player, Obstacles *obstacles)
             {
                 if (get_player_y(player) <= get_obstacle_y(&obstacles->obstacles[i]) + get_obstacle_h(&obstacles->obstacles[i]) && get_player_y(player) > get_obstacle_y(&obstacles->obstacles[i]) + (get_obstacle_h(&obstacles->obstacles[i]) / 2))
                 {
-                    if (player->velocity_y < 0)
+                    if (get_player_velocity_y(player) < 0)
                     {
                         set_player_multiplier_y(player, 0);
                     }
                 }
                 else if (get_player_y(player) + get_player_h(player) >= get_obstacle_y(&obstacles->obstacles[i]))
                 {
-                    if (player->velocity_y > 0)
+                    if (get_player_velocity_y(player) > 0)
                     {
                         set_player_multiplier_y(player, 0);
                     }
@@ -317,6 +342,81 @@ void detect_projectils_collision(Players *players, Player *player, dynarray *pro
                     }
                 }
             }
+        }
+    }
+}
+
+void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer)
+{
+    if (get_player_heath(player) > 0)
+    {
+        double last_time = 0;
+        for (int i = 0; i < projectils->size; i++)
+        {
+            Projectil *projectil;
+            projectil = dynarray_get(projectils, i);
+            if (get_player_id(player) == get_projectil_player_id(projectil))
+            {
+                last_time = get_projectil_spawn_time(projectil);
+            }
+        }
+
+        char path[100] = "";
+        switch (get_player_power(player))
+        {
+        case GUN:
+            if (timer - last_time >= 0.5)
+            {
+                double self_destruct = 1.5;
+                strcpy(path, "../Assets/Projectils/bullet.png");
+                init_projectil(projectils, window, GUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1000, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
+            }
+
+            break;
+        case SHOTGUN:
+
+            if (timer - last_time >= 0.75)
+            {
+                double self_destruct = 0.35;
+                strcpy(path, "../Assets/Projectils/bullet.png");
+                if (get_player_direction_x(player) == 1 || get_player_direction_x(player) == -1)
+                {
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), 0.25, timer, self_destruct, path);
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), -0.25, timer, self_destruct, path);
+
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), 0.5, timer, self_destruct, path);
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), -0.5, timer, self_destruct, path);
+                }
+                else if (get_player_direction_y(player) == 1 || get_player_direction_y(player) == -1)
+                {
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, 0.25, (double)get_player_direction_y(player), timer, self_destruct, path);
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, -0.25, (double)get_player_direction_y(player), timer, self_destruct, path);
+
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, 0.5, (double)get_player_direction_y(player), timer, self_destruct, path);
+                    init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, -0.5, (double)get_player_direction_y(player), timer, self_destruct, path);
+                }
+
+                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, get_player_direction_x(player), get_player_direction_y(player), timer, self_destruct, path);
+            }
+            break;
+        case ROCKET:
+            if (timer - last_time >= 1)
+            {
+                double self_destruct = 5;
+                strcpy(path, "../Assets/Projectils/rocket_bullet.png");
+                init_projectil(projectils, window, ROCKET, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 500, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
+            }
+            break;
+        case MINE:
+            if (timer - last_time >= 1.25)
+            {
+                double self_destruct = 30;
+                strcpy(path, "../Assets/Projectils/mine.png");
+                init_projectil(projectils, window, MINE, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 0, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
+            }
+            break;
+        default:
+            break;
         }
     }
 }
@@ -414,12 +514,15 @@ void set_player_texture(Player *player, SDL_Context *window, char *path)
     {
         strcpy(direction, "left");
     }
-
-    if (get_player_direction_y(player) > 0)
+    else if (get_player_direction_y(player) > 0)
     {
         strcpy(direction, "down");
     }
     else if (get_player_direction_y(player) < 0)
+    {
+        strcpy(direction, "up");
+    }
+    else
     {
         strcpy(direction, "up");
     }
@@ -507,6 +610,11 @@ double get_player_velocity_y(Player *player)
     return player->velocity_y;
 }
 
+SDL_Rect *get_player_rectangle(Player *player)
+{
+    return &player->rectangle;
+}
+
 int get_player_x(Player *player)
 {
     return player->rectangle.x;
@@ -575,4 +683,9 @@ int get_player_score(Player *player)
 double get_player_dead_time(Player *player)
 {
     return player->dead_time;
+}
+
+SDL_Texture *get_player_texture(Player *player)
+{
+    return player->texture;
 }

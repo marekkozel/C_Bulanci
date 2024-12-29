@@ -32,7 +32,9 @@
 			"math.h": "c",
 			"string.h": "c",
 			"leadboard.h": "c",
-			"cmath": "c"
+			"cmath": "c",
+			"bot.h": "c",
+			"stdlib.h": "c"
 		}
 	}
 }

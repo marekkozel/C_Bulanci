@@ -1,9 +1,14 @@
 #pragma once
 
-#include "Config/dynamic_array.h"
 #include <SDL2/SDL.h>
-#include "Config/sdl.h"
-#include "Scenes/Obstacles/obstacles.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <assert.h>
+#include <SDL2/SDL_image.h>
+#include <stdbool.h>
+#include "Config/dynamic_array.h"
+#include "Obstacles/obstacles.h"
+#include "Weapons/Power_ups/power_ups.h"
 
 #define PROJECTIL_SPEED (1000)
 
@@ -33,7 +38,7 @@ void move_projectil(Projectil *projectil, double delta_time);
 
 void destroy_projectil(dynarray *projectils, Projectil *projectil, double time);
 
-void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil, SDL_Context *window, double time);
+void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil, SDL_Context *window, bool player_exist, double time);
 
 void rocket_explosion(Projectil *projectil, dynarray *projectils, SDL_Context *window, int player_id, int x, int y, double time);
 

@@ -1,18 +1,4 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_timer.h>
-#include <SDL2/SDL_image.h>
-#include <time.h>
-#include <math.h>
-#include <assert.h>
-#include "sdl.h"
-#include "Player/player.h"
-#include "Scenes/Obstacles/obstacles.h"
-#include "Config/dynamic_array.h"
-#include "Weapons/Power_ups/power_ups.h"
+
 #include "projectils.h"
 
 void init_projectils(dynarray *projectils)
@@ -70,7 +56,7 @@ void destroy_projectil(dynarray *projectils, Projectil *projectil, double time)
     }
 }
 
-void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil, SDL_Context *window, double time)
+void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *projectil, SDL_Context *window, bool player_exist, double time)
 {
     for (int i = 0; i < obstacles->count_obstacles; i++)
     {
@@ -84,21 +70,26 @@ void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *
             set_projectil_h(projectil, 0);
         }
     }
-    for (int i = 0; i < projectils->size; i++)
+    if (player_exist)
     {
-        Projectil *another_projectil;
-        another_projectil = dynarray_get(projectils, i);
 
-        if (SDL_HasIntersection(projectil->rectangle, another_projectil->rectangle) && get_projectil_player_id(projectil) != get_projectil_player_id(another_projectil) && get_projectil_id(another_projectil) != MINE && get_projectil_id(projectil) != MINE)
+        for (int i = 0; i < projectils->size; i++)
         {
-            if (get_projectil_id(projectil) == ROCKET)
+            Projectil *another_projectil;
+            another_projectil = dynarray_get(projectils, i);
+
+            if (SDL_HasIntersection(projectil->rectangle, another_projectil->rectangle) && get_projectil_player_id(projectil) != get_projectil_player_id(another_projectil) && get_projectil_id(another_projectil) != MINE && get_projectil_id(projectil) != MINE)
             {
-                rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
-            }
-            set_projectil_w(projectil, 0);
-            set_projectil_h(projectil, 0);
-            set_projectil_w(another_projectil, 0);
-            set_projectil_h(another_projectil, 0);
+                set_projectil_w(projectil, 0);
+                set_projectil_h(projectil, 0);
+                set_projectil_w(another_projectil, 0);
+                set_projectil_h(another_projectil, 0);
+                if (get_projectil_id(projectil) == ROCKET)
+                {
+
+                    rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
+                }
+                        }
         }
     }
     if (get_projectil_id(projectil) == ROCKET && get_projectil_w(projectil) != 0)
@@ -129,78 +120,6 @@ void rocket_explosion(Projectil *projectil, dynarray *projectils, SDL_Context *w
     init_projectil(projectils, window, 0, player_id, x, y, 1000, -1, 0, time, 1, path);
     init_projectil(projectils, window, 0, player_id, x, y, 1000, -1, 1, time, 1, path);
     init_projectil(projectils, window, 0, player_id, x, y, 1000, 0, 1, time, 1, path);
-}
-
-void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer)
-{
-    double last_time = 0;
-    for (int i = 0; i < projectils->size; i++)
-    {
-        Projectil *projectil;
-        projectil = dynarray_get(projectils, i);
-        if (get_player_id(player) == get_projectil_player_id(projectil))
-        {
-            last_time = get_projectil_spawn_time(projectil);
-        }
-    }
-
-    char path[100] = "";
-    switch (get_player_power(player))
-    {
-    case GUN:
-        if (timer - last_time >= 0.5)
-        {
-            double self_destruct = 1.5;
-            strcpy(path, "../Assets/Projectils/bullet.png");
-            init_projectil(projectils, window, GUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1000, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
-        }
-
-        break;
-    case SHOTGUN:
-
-        if (timer - last_time >= 0.75)
-        {
-            double self_destruct = 0.35;
-            strcpy(path, "../Assets/Projectils/bullet.png");
-            if (get_player_direction_x(player) == 1 || get_player_direction_x(player) == -1)
-            {
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), 0.25, timer, self_destruct, path);
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), -0.25, timer, self_destruct, path);
-
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), 0.5, timer, self_destruct, path);
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, (double)get_player_direction_x(player), -0.5, timer, self_destruct, path);
-            }
-            else if (get_player_direction_y(player) == 1 || get_player_direction_y(player) == -1)
-            {
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, 0.25, (double)get_player_direction_y(player), timer, self_destruct, path);
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, -0.25, (double)get_player_direction_y(player), timer, self_destruct, path);
-
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, 0.5, (double)get_player_direction_y(player), timer, self_destruct, path);
-                init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, -0.5, (double)get_player_direction_y(player), timer, self_destruct, path);
-            }
-
-            init_projectil(projectils, window, SHOTGUN, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 1200, get_player_direction_x(player), get_player_direction_y(player), timer, self_destruct, path);
-        }
-        break;
-    case ROCKET:
-        if (timer - last_time >= 1)
-        {
-            double self_destruct = 5;
-            strcpy(path, "../Assets/Projectils/rocket_bullet.png");
-            init_projectil(projectils, window, ROCKET, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 500, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
-        }
-        break;
-    case MINE:
-        if (timer - last_time >= 1.25)
-        {
-            double self_destruct = 30;
-            strcpy(path, "../Assets/Projectils/mine.png");
-            init_projectil(projectils, window, MINE, get_player_id(player), get_player_x(player) + (get_player_w(player) / 2), get_player_y(player) + (get_player_h(player) / 2), 0, (double)get_player_direction_x(player), (double)get_player_direction_y(player), timer, self_destruct, path);
-        }
-        break;
-    default:
-        break;
-    }
 }
 
 //------------
