@@ -532,7 +532,7 @@ void set_player_texture(Player *player, SDL_Context *window, char *path)
     SDL_Texture *tex = IMG_LoadTexture(window->renderer, image_path);
     assert(tex);
 
-    SDL_SetTextureAlphaMod(tex, 255 * get_player_heath(player) / 100);
+    SDL_SetTextureAlphaMod(tex, 55 + (200 * get_player_heath(player) / 100));
 
     player->texture = tex;
 }
