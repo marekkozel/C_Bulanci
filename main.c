@@ -28,7 +28,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 90;
+    int sec = 10;
 
     int m = 0;
     int s = 0;
