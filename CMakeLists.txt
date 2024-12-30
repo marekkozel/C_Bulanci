@@ -12,13 +12,13 @@ add_executable(game main.c
     Config/sdl.c
     Config/sdl.h
     Config/keybinds.c
-
     Scenes/Obstacles/obstacles.c
     Config/dynamic_array.c
     Weapons/Power_ups/power_ups.c
     Weapons/Projectils/projectils.c
     Scenes/Main_menu/main_menu.c
     Scenes/Leaderboard/leaderboard.c
+    Sounds/sounds.c
 )
 
 find_package(SDL2 REQUIRED)

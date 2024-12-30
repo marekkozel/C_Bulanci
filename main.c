@@ -18,6 +18,7 @@
 #include "Scenes/Main_menu/main_menu.h"
 #include "Scenes/Leaderboard/leaderboard.h"
 #include "Player/bot.h"
+#include "Sounds/sounds.h"
 
 #define WINDOW_WIDTH (1920)
 #define WINDOW_HEIGHT (1080)
@@ -101,6 +102,7 @@ int main()
 
         if (round(miliseconds_time) - 1 == seconds_timer)
         {
+            play_sound();
             spawn_power_up(&power_ups, &window, seconds_timer);
 
             seconds_timer++;
