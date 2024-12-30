@@ -66,6 +66,7 @@ int main()
     SDL_Color RGB_WHITE = {255, 255, 255};
 
     // Main menu
+    play_sound();
     start_main_menu(&players, &window, close_request, font, main_font);
 
     // World section
@@ -102,7 +103,7 @@ int main()
 
         if (round(miliseconds_time) - 1 == seconds_timer)
         {
-            play_sound();
+
             spawn_power_up(&power_ups, &window, seconds_timer);
 
             seconds_timer++;
@@ -233,9 +234,9 @@ int main()
     TTF_CloseFont(font);
     TTF_CloseFont(main_font);
     TTF_Quit();
-    SDL_DestroyRenderer(window.renderer);
-    SDL_DestroyWindow(window.window);
-
+    SDL_DestroyRenderer(&window.renderer);
+    SDL_DestroyWindow(&window.window);
+    // stop_audio();
     SDL_Quit();
 
     return 0;

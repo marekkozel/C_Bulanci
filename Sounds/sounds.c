@@ -15,18 +15,20 @@ void play_sound()
         return;
     }
     play_audio();
-    clean_up();
 }
 
 static int initialize_audio()
 {
     SDL_AudioSpec audioSpec;
+    SDL_memset(&audioSpec, 0, sizeof(audioSpec));
     SDL_AudioSpec obtained;
+    SDL_memset(&obtained, 0, sizeof(obtained));
 
-    audioSpec.channels = CHANNELS;
-    audioSpec.freq = SAMPLE_RATE;
-    audioSpec.format = SDL_AUDIO_FORMAT;
     audioSpec.callback = audio_callback;
+    audioSpec.channels = 2;
+    audioSpec.freq = AUDIO_S16;
+    audioSpec.format = AUDIO_S16;
+    audioSpec.samples = 2048;
 
     _audioDeviceId = SDL_OpenAudioDevice(NULL, 0, &audioSpec, &obtained, SDL_AUDIO_ALLOW_FREQUENCY_CHANGE);
     if (_audioDeviceId == INVALID_AUDIO_DEVICE)
@@ -34,7 +36,7 @@ static int initialize_audio()
         return -2; /* Could not open Device */
     }
 
-    if (SDL_LoadWAV("../Assets/Sounds/get_hited.wav", &audioSpec, &_audioBuffer, &_audioLength) == NULL)
+    if (SDL_LoadWAV("../Assets/Sounds/music.wav", &audioSpec, &_audioBuffer, &_audioLength) == NULL)
     {
         return -3; /* File Not Found */
     }
@@ -46,7 +48,7 @@ static void audio_callback(void *userData, Uint8 *stream, int length)
 {
     if (_audioLength == 0)
     {
-        return;
+        initialize_audio();
     }
     if (length > (int)_audioLength)
     {
@@ -54,7 +56,7 @@ static void audio_callback(void *userData, Uint8 *stream, int length)
     }
 
     memset(stream, 0, length); /* Silence everything */
-    SDL_MixAudioFormat(stream, _audioBuffer, SDL_AUDIO_FORMAT, length, SDL_MIX_MAXVOLUME);
+    SDL_MixAudioFormat(stream, _audioBuffer, AUDIO_S16, length, SDL_MIX_MAXVOLUME);
 
     _audioBuffer += length;
     _audioLength -= length;
@@ -63,8 +65,12 @@ static void audio_callback(void *userData, Uint8 *stream, int length)
 static void play_audio()
 {
     SDL_PauseAudioDevice(_audioDeviceId, PLAY_AUDIO);
-    SDL_Delay(AUDIO_LENGTH_MS);
+}
+
+void stop_audio()
+{
     SDL_PauseAudioDevice(_audioDeviceId, STOP_AUDIO);
+    clean_up();
 }
 static void clean_up()
 {
