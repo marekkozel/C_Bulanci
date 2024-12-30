@@ -2,7 +2,7 @@
 
 SDL_Context sdl_window_setup()
 {
-    return sdl_context_init("Čtverhránci", WINDOW_WIDTH, WINDOW_HEIGHT);
+    return sdl_context_init("Cubes Battle", WINDOW_WIDTH, WINDOW_HEIGHT);
 }
 
 SDL_Context sdl_context_init(const char *window_name, int width, int height)
@@ -13,7 +13,7 @@ SDL_Context sdl_context_init(const char *window_name, int width, int height)
         exit(1);
     }
 
-    SDL_Window *window = SDL_CreateWindow(window_name, 100, 100, width, height, SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow(window_name, 0, 0, width, height, SDL_WINDOW_SHOWN);
     if (!window)
     {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());

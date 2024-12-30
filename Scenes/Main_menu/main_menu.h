@@ -58,7 +58,7 @@ void start_main_menu(Players *palyers, SDL_Context *window, int *close_request, 
 
 void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context *window, int *close_request);
 
-void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font);
+void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, bool *quit);
 
 void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, Player *player);
 

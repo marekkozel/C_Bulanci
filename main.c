@@ -28,7 +28,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 90;
+    int sec = 10;
 
     int m = 0;
     int s = 0;
@@ -130,9 +130,18 @@ int main()
                         max_score = get_player_score(&players.players[i]);
                     }
                 }
-                username_input_screen(&window, close_request, font, main_font, &players.players[max_score_index]);
+
+                if (players.count_players != 0)
+                {
+                    username_input_screen(&window, close_request, font, main_font, &players.players[max_score_index]);
+                }
+
+                if (!*close_request)
+                {
+                    bool quit = false;
+                    leaderboard(&window, close_request, font, main_font, &quit);
+                }
                 *close_request = 1;
-                leaderboard(&window, close_request, font, main_font);
             }
         }
 

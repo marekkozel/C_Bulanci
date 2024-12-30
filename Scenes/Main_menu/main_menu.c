@@ -170,7 +170,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
 
             if (goto_leaderboard)
             {
-                leaderboard(window, close_request, font, main_font);
+                leaderboard(window, close_request, font, main_font, &quit);
                 goto_leaderboard = false;
             }
         }
@@ -373,7 +373,7 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
     SDL_Delay(200);
 }
 
-void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font)
+void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Font *main_font, bool *quit_main)
 {
 
     bool play1 = false;
@@ -458,6 +458,7 @@ void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Fo
             if (e.type == SDL_QUIT)
             {
                 quit = true;
+                *quit_main = true;
                 *close_request = 1;
             }
         }
