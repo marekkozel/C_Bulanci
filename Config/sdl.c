@@ -36,8 +36,3 @@ SDL_Context sdl_context_init(const char *window_name, int width, int height)
         .window = window,
         .renderer = renderer};
 }
-void sdl_context_free(SDL_Context *ctx)
-{
-    SDL_DestroyRenderer(&ctx->renderer);
-    SDL_DestroyWindow(&ctx->window);
-}

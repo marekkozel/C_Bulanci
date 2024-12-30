@@ -4,7 +4,7 @@
 void init_players(Players *players)
 {
     players->count_players = 0;
-    players->players = (Player *)calloc(8 * sizeof(Player), 0);
+    players->players = (Player *)malloc(4 * sizeof(Player));
 }
 
 void add_player(Players *players, Player *player)
