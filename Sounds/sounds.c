@@ -26,7 +26,7 @@ static int initialize_audio()
 
     audioSpec.callback = audio_callback;
     audioSpec.channels = 2;
-    audioSpec.freq = AUDIO_S16;
+    audioSpec.freq = 44100;
     audioSpec.format = AUDIO_S16;
     audioSpec.samples = 2048;
 
@@ -56,7 +56,7 @@ static void audio_callback(void *userData, Uint8 *stream, int length)
     }
 
     memset(stream, 0, length); /* Silence everything */
-    SDL_MixAudioFormat(stream, _audioBuffer, AUDIO_S16, length, SDL_MIX_MAXVOLUME);
+    SDL_MixAudioFormat(stream, _audioBuffer, AUDIO_S16, length, 25);
 
     _audioBuffer += length;
     _audioLength -= length;
