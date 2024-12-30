@@ -34,7 +34,7 @@ static int initialize_audio()
         return -2; /* Could not open Device */
     }
 
-    if (SDL_LoadWAV("../Asset/Sounds/get_hited.wav", &audioSpec, &_audioBuffer, &_audioLength) == NULL)
+    if (SDL_LoadWAV("../Assets/Sounds/get_hited.wav", &audioSpec, &_audioBuffer, &_audioLength) == NULL)
     {
         return -3; /* File Not Found */
     }
@@ -69,5 +69,5 @@ static void play_audio()
 static void clean_up()
 {
     SDL_CloseAudioDevice(_audioDeviceId);
-    SDL_FreeWAV(_audioBuffer);
+    // SDL_FreeWAV(_audioBuffer);
 }

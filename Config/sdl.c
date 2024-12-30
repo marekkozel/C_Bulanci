@@ -7,7 +7,7 @@ SDL_Context sdl_window_setup()
 
 SDL_Context sdl_context_init(const char *window_name, int width, int height)
 {
-    if (SDL_Init(SDL_INIT_VIDEO))
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO))
     {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
         exit(1);

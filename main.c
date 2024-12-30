@@ -233,7 +233,8 @@ int main()
     TTF_CloseFont(font);
     TTF_CloseFont(main_font);
     TTF_Quit();
-    sdl_context_free(&window);
+    SDL_DestroyRenderer(window.renderer);
+    SDL_DestroyWindow(window.window);
 
     SDL_Quit();
 
