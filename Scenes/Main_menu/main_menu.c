@@ -1,6 +1,3 @@
-// Let's assume that your method of input is a mouse
-// since this is long, you can create a class for this then recall it in the gameloop
-
 #include "main_menu.h"
 
 void init_Text(Text *text, SDL_Color color, TTF_Font *font, char input_text[100], SDL_Context *window)

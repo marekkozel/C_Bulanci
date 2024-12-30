@@ -13,9 +13,9 @@ void dynarray_push(dynarray *array, array_type item)
     if (array->capacity == array->size)
     {
         int new_capacity = array->capacity * 2;
-        array_type *memory = (array_type *)malloc(sizeof(array_type) * new_capacity); // Vytvoření dvojnásobně velké paměti
-        memcpy(memory, array->items, array->size * sizeof(array_type));               // Nakopírování staré paměti do nové paměti
-        free(array->items);                                                           // Uvolnění staré paměti
+        array_type *memory = (array_type *)malloc(sizeof(array_type) * new_capacity);
+        memcpy(memory, array->items, array->size * sizeof(array_type));
+        free(array->items);
 
         array->items = memory;
         array->capacity = new_capacity;
@@ -37,13 +37,13 @@ void dynarray_remove(dynarray *array, array_type item)
         if (array->items[i] == item)
         {
             free(item);
-            // Pokud jsme našli hledaný prvek, posuneme všechny vpravo od něho o jednu pozici doleva
+
             for (int j = i + 1; j < array->size; j++)
             {
                 array->items[j - 1] = array->items[j];
             }
             array->size--;
-            // Abychom nepřeskočili příští prvek, musíme se posunout o jeden index zpátky.
+
             i--;
         }
     }

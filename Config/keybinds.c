@@ -25,7 +25,7 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
 
     while (SDL_PollEvent(&event))
     {
-        // printf("%s", event.text);
+
         switch (event.type)
         {
         case SDL_QUIT:

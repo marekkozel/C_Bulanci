@@ -9,8 +9,6 @@ void init_players(Players *players)
 
 void add_player(Players *players, Player *player)
 {
-    // printf("\n%d\n", get_player_id(player));
-
     players->players[players->count_players] = *player;
     players->count_players += 1;
 }
