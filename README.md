@@ -3,7 +3,7 @@
 
 
 Cube battles is a student-written game in C, created to meet the requirements of the UPR project assignment. We were presented with a game [Bulánky](https://www.bulanci.cz/) as a template. You fight as a Cube
-against another Cubes, and battle about the best score.
+against another Cubes, and you're fighting for the best score.
 
 ## Building the project
 
