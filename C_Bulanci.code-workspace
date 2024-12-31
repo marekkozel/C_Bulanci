@@ -1,40 +1,7 @@
 {
-	"folders": [
-		{
-			"path": "."
-		},
-		{
-			"path": "../Vsb_UPR/Homework_10_SDL"
-		},
-		{
-			"path": "../Vsb_UPR/Laboratory_10"
-		},
-		{
-			"path": "../Vsb_UPR/Homework_8_Files"
-		}
-	],
-	"settings": {
-		"files.associations": {
-			"stdio.h": "c",
-			"sdl.h": "c",
-			"keybinds.h": "c",
-			"obstacles.h": "c",
-			"dynamic_array.h": "c",
-			"player.h": "c",
-			"power_ups.h": "c",
-			"projectils.h": "c",
-			"time.h": "c",
-			"sdl_ttf.h": "c",
-			"sdl_image.h": "c",
-			"main_menu.h": "c",
-			"sdl_timer.h": "c",
-			"assert.h": "c",
-			"math.h": "c",
-			"string.h": "c",
-			"leadboard.h": "c",
-			"cmath": "c",
-			"bot.h": "c",
-			"stdlib.h": "c"
-		}
-	}
+    "folders": [
+        {
+            "path": "."
+        }
+    ]
 }

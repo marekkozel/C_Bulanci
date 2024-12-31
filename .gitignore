@@ -1,8 +1,10 @@
 # Vs Code
+.code-workspace
 .vscode
 launch.json
 tasks.json
 task.json
+
 
 # Cmake
 build
