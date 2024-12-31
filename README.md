@@ -130,6 +130,10 @@ SDL documentation:
 
 * [SDL documentation](https://wiki.libsdl.org/SDL3/FrontPage)
 
+My Github repository:
+
+* [C_Bulanci](https://github.com/marekkozel/C_Bulanci)
+
 ``` 
 MIT License
 
