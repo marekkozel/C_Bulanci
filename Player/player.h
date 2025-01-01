@@ -11,7 +11,7 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "sdl.h"
+#include "Config/sdl.h"
 #include "Scenes/Obstacles/obstacles.h"
 #include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"
@@ -62,7 +62,7 @@ typedef struct
 void init_players(Players *players);
 void add_player(Players *players, Player *player);
 
-void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type);
+void init_player(Player *player, SDL_Context *window, int id, char *path, Color color, int type);
 
 void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, SDL_Context *window, double time);
 
@@ -79,7 +79,7 @@ void detect_power_up_collision(Player *player, dynarray *array, double time);
 
 void check_power_up_time(Player *player, double time);
 
-void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time);
+void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, SDL_Context *window, double time);
 
 void spawn_projectil(Player *player, dynarray *projectils, SDL_Context *window, double timer);
 

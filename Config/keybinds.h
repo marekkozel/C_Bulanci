@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-#include "sdl.h"
+#include "Config/sdl.h"
 #include "Player/player.h"
 #include "Weapons/Projectils/projectils.h"
 

@@ -9,8 +9,8 @@
 #include <time.h>
 #include <assert.h>
 #include "Config/sdl.h"
-#include "player.h"
-#include "keybinds.h"
+#include "Player/player.h"
+#include "Config/keybinds.h"
 #include "Scenes/Obstacles/obstacles.h"
 #include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"
@@ -28,7 +28,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 10;
+    int sec = 45;
 
     int m = 0;
     int s = 0;
@@ -63,7 +63,7 @@ int main()
     char score_text[100] = "Score: 0";
     char time_text[100] = "01:30";
 
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     // Main menu
     play_sound(); // Play background music

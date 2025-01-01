@@ -4,9 +4,6 @@
 Cube battles is a student-written game in C, created to meet the requirements of the UPR project assignment. We were presented with a game [Bulánky](https://www.bulanci.cz/) as a template. You fight as a Cube
 against another Cubes, and you're fighting for the best score.
 
-<video width="854" height="480" controls>
-  <source src="./docs/Cubes_battle_video.mp4" type="video/mp4">
-</video>
 
 ## Building the project
 
@@ -97,6 +94,8 @@ The power up spawns every 5 seconds on random spawner. If you cross him, you pic
 |Shotgun|![Shotgun](./docs/shotgun_power_up-export.png)|![Bullet](./docs/bullet-export.png)|Short range|35|It allows you to shoot 5 spreaded bullets in forward direction.|
 |Rocket|![Rocket](./docs/rocket_power_up-export.png)|![Rocket bullet](./docs/rocket_bullet-export.png)|Infinite range|0|Rocket is special projectil, it has infinite range, but when it collides with, [Obstacle](#Obstacles), [Cubes](#Cubes), or with borders. It would explode, and spreaded 8 more gun bullets in every direction. |
 |Mine|![Mine](./docs/mine_power_up-export.png)|![Mine](./docs/mine-export.png)|0 range|100|It allows you to place the mine on the ground, when enemy steps on it it would be instantly vaporized, but placed mines will automaticly disappers after 30 seconds.|
+
+> While player is in game, projectiles can destroy each other, but Mine is indestructable.
 
 ## Obstacles
 In the game are 2 types of obstacles:

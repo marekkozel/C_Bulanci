@@ -1,3 +1,5 @@
+#pragma once
+
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -13,12 +15,12 @@
 
 void play_sound();
 
-static int initialize_audio();
+int initialize_audio();
 
-static void audio_callback(void *userData, Uint8 *stream, int length);
+void audio_callback(void *userData, Uint8 *stream, int length);
 
-static void play_audio();
+void play_audio();
 
 void stop_audio();
 
-static void clean_up();
+void clean_up();

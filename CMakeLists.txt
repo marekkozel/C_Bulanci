@@ -23,11 +23,12 @@ add_executable(game main.c
 
 find_package(SDL2 REQUIRED)
 
-target_include_directories(game PRIVATE ${SDL2_INCLUDE_DIRS} Config Player Weapons Scenes Assets)
+target_include_directories(game PRIVATE ${SDL2_INCLUDE_DIRS} Config Player Weapons Scenes Assets Sounds)
 target_link_libraries(game SDL2 SDL2_image SDL2_ttf)
 
 add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON -lm)
 
+# Include math library, if it is not included
 include(CheckFunctionExists)
 
 if(NOT POW_FUNCTION_EXISTS AND NOT NEED_LINKING_AGAINST_LIBM)

@@ -11,7 +11,7 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "sdl.h"
+#include "Config/sdl.h"
 #include "Scenes/Obstacles/obstacles.h"
 #include "Config/dynamic_array.h"
 #include "Weapons/Power_ups/power_ups.h"

@@ -13,7 +13,7 @@ void add_player(Players *players, Player *player)
     players->count_players += 1;
 }
 
-void init_player(Player *player, SDL_Context *window, int id, char path[100], Color color, int type)
+void init_player(Player *player, SDL_Context *window, int id, char *path, Color color, int type)
 {
 
     set_player_id(player, id);
@@ -87,7 +87,7 @@ void move_player(Player *player, double delta_time, Players *players, Obstacles 
     detect_boarders_collisions(player);
     detect_obstacles_collisions(player, obstacles);
     detect_power_up_collision(player, power_ups, time);
-    detect_projectils_collision(players, player, projectils, obstacles, window, time);
+    detect_projectils_collision(players, player, projectils, window, time);
 
     // Movement
     double velocity_x = get_player_velocity_x(player);
@@ -307,7 +307,7 @@ void check_power_up_time(Player *player, double time)
     }
 }
 
-void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, Obstacles *obstacles, SDL_Context *window, double time)
+void detect_projectils_collision(Players *players, Player *player, dynarray *projectils, SDL_Context *window, double time)
 {
     for (int i = 0; i < projectils->size; i++)
     {

@@ -12,8 +12,8 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "sdl.h"
-#include "player.h"
+#include "Config/sdl.h"
+#include "Player/player.h"
 #include "Scenes/Leaderboard/leaderboard.h"
 
 typedef struct
@@ -50,7 +50,7 @@ typedef struct
 
 } Icon;
 
-void init_Text(Text *text, SDL_Color color, TTF_Font *font, char input_text[100], SDL_Context *window);
+void init_Text(Text *text, SDL_Color color, TTF_Font *font, char *input_text, SDL_Context *window);
 
 void init_Icon(Icon *icon, int id, Color color, SDL_Context *window, TTF_Font *font);
 

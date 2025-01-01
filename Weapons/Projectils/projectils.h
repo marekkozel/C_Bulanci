@@ -7,7 +7,7 @@
 #include <SDL2/SDL_image.h>
 #include <stdbool.h>
 #include "Config/dynamic_array.h"
-#include "Obstacles/obstacles.h"
+#include "Scenes/Obstacles/obstacles.h"
 #include "Weapons/Power_ups/power_ups.h"
 
 #define PROJECTIL_SPEED (1000)

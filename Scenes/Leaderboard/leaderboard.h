@@ -12,8 +12,8 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "sdl.h"
-#include "player.h"
+#include "Config/sdl.h"
+#include "Player/player.h"
 
 typedef struct
 {

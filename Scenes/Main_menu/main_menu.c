@@ -1,6 +1,6 @@
 #include "main_menu.h"
 
-void init_Text(Text *text, SDL_Color color, TTF_Font *font, char input_text[100], SDL_Context *window)
+void init_Text(Text *text, SDL_Color color, TTF_Font *font, char *input_text, SDL_Context *window)
 {
     // Main text
     set_text_surface(text, TTF_RenderText_Solid(font, input_text, color));
@@ -20,7 +20,7 @@ void init_Icon(Icon *icon, int id, Color color, SDL_Context *window, TTF_Font *f
 {
     int x_offset = 3;
     int y_offset = 10;
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     // Main icon
     set_icon_id(icon, id);
@@ -92,7 +92,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
     char leaderboard_text[100] = "Leaderboard";
     char exitGame_text[100] = "Exit Game";
 
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     Text main_Text;
     init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
@@ -203,7 +203,7 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
 
     char main_text[100] = "choose character";
     char playButton_text[100] = "Play";
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     // Icons
     Icon icons[4];
@@ -388,7 +388,7 @@ void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Fo
     char main_text[100] = "10 Best players:";
     char back_text[100] = "Exit";
 
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     Text main_Text;
     init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
@@ -409,7 +409,7 @@ void leaderboard(SDL_Context *window, int *close_request, TTF_Font *font, TTF_Fo
     Data *data = best_score_sorted(data_count);
 
     Text leaderboard_table[10];
-    memset(leaderboard_table, 0, 10);
+    memset(leaderboard_table, 0, 10 * sizeof(Text));
     char string[500] = "";
 
     Text score_Text;
@@ -506,7 +506,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
     char *input_text = (char *)malloc(max_text_length * sizeof(char));
     memset(input_text, 0, max_text_length);
 
-    SDL_Color RGB_WHITE = {255, 255, 255};
+    SDL_Color RGB_WHITE = {255, 255, 255, 255};
 
     switch (player->color)
     {

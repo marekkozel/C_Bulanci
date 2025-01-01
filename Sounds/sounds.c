@@ -16,7 +16,7 @@ void play_sound()
     play_audio();
 }
 
-static int initialize_audio()
+int initialize_audio()
 {
     SDL_AudioSpec audioSpec;
     SDL_memset(&audioSpec, 0, sizeof(audioSpec));
@@ -43,7 +43,7 @@ static int initialize_audio()
     return SDL_OK;
 }
 
-static void audio_callback(void *userData, Uint8 *stream, int length)
+void audio_callback(void *userData, Uint8 *stream, int length)
 {
     if (_audioLength == 0)
     {
@@ -61,7 +61,7 @@ static void audio_callback(void *userData, Uint8 *stream, int length)
     _audioLength -= length;
 }
 
-static void play_audio()
+void play_audio()
 {
     SDL_PauseAudioDevice(_audioDeviceId, PLAY_AUDIO);
 }
@@ -71,7 +71,7 @@ void stop_audio()
     SDL_PauseAudioDevice(_audioDeviceId, STOP_AUDIO);
     clean_up();
 }
-static void clean_up()
+void clean_up()
 {
     SDL_CloseAudioDevice(_audioDeviceId);
 }

@@ -10,7 +10,7 @@
 #include <time.h>
 #include <math.h>
 #include <assert.h>
-#include "sdl.h"
+#include "Config/sdl.h"
 
 typedef struct
 {
@@ -31,7 +31,7 @@ void set_obstacles(Obstacles *obstacles, SDL_Context *window);
 
 void init_obstacles(Obstacles *obstacles, int size);
 
-void init_obstacle(SDL_Context *window, Obstacles *obstacles, int id, char tex[100], int x, int y);
+void init_obstacle(SDL_Context *window, Obstacles *obstacles, int id, char *tex, int x, int y);
 
 void set_obstacle_id(Obstacle *obstacle, int id);
 

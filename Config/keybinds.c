@@ -109,7 +109,8 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
                 break;
             case SDL_SCANCODE_RCTRL:
                 spawn_projectil(player2, projectils, window, timer);
-
+                break;
+            default:
                 break;
             }
             break;
@@ -167,9 +168,13 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
                     set_player_friction_x(player2, FRICTION);
                 }
                 break;
+            default:
+                break;
             }
             break;
         }
+        default:
+            break;
         }
     }
 }
