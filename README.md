@@ -8,6 +8,12 @@ against another Cubes, and you're fighting for the best score.
   <source src="./docs/Cubes_battle_video.mp4" type="video/mp4">
 </video>
 
+
+
+https://github.com/user-attachments/assets/352c0489-f08c-4233-85f3-c85aedfa7643
+
+
+
 ## Building the project
 
 To be able to build this project, you have to follow these 4 steps:
