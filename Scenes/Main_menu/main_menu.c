@@ -497,7 +497,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
     SDL_QueryTexture(background, NULL, NULL, &background_rect.w, &background_rect.h);
 
     char main_text[100] = "Type in your username:";
-    char winner_text[200] = "";
+    char winner_text[300] = "";
     char continue_text[100] = "Continue";
     char color_text[100] = "";
     char player_text[100] = "";
