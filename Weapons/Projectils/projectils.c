@@ -35,7 +35,6 @@ void init_projectil(dynarray *projectils, SDL_Context *window, int id, int playe
 
 void move_projectil(Projectil *projectil, double delta_time)
 {
-
     double velocity_x = get_projectil_velocity_x(projectil);
     double velocity_y = get_projectil_velocity_y(projectil);
 
@@ -45,6 +44,7 @@ void move_projectil(Projectil *projectil, double delta_time)
 
 void destroy_projectil(dynarray *projectils, Projectil *projectil, double time)
 {
+    // After destruction time, hide the projectile, wait 10 seconds and then remove it
     if (get_projectil_self_destruct(projectil) - time <= 0)
     {
         set_projectil_w(projectil, 0);
@@ -89,9 +89,11 @@ void projectil_collision(dynarray *projectils, Obstacles *obstacles, Projectil *
 
                     rocket_explosion(projectil, projectils, window, get_projectil_player_id(projectil), get_projectil_x(projectil), get_projectil_y(projectil), time);
                 }
-                        }
+            }
         }
     }
+
+    // Explode the rocket, if it hits the borders
     if (get_projectil_id(projectil) == ROCKET && get_projectil_w(projectil) != 0)
     {
         if (get_projectil_x(projectil) <= 0)

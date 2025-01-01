@@ -3,10 +3,10 @@
 
 void read_keys(int *close_request, SDL_Context *window, Players *players, dynarray *projectils, double timer)
 {
+    // Initilize 2 players, controled by human
     int first_player = 0;
     Player *player1 = malloc(sizeof(Player));
     Player *player2 = malloc(sizeof(Player));
-
     for (int i = 0; i < players->count_players; i++)
     {
         Player *player = &players->players[i];
@@ -46,6 +46,7 @@ void read_keys(int *close_request, SDL_Context *window, Players *players, dynarr
                 break;
             }
             case SDL_SCANCODE_W:
+                // Set just one direction velocity, and set friction in the other one, so player can move only in 4 directions.
                 set_player_friction_y(player1, 0);
                 set_player_velovity_y(player1, -PLAYER_SPEED);
                 set_player_friction_x(player1, FRICTION);

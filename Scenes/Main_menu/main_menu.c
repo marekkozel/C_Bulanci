@@ -141,6 +141,7 @@ void start_main_menu(Players *players, SDL_Context *window, int *close_request, 
             }
             if (e.type == SDL_MOUSEBUTTONDOWN)
             {
+                // Handle the clicks on the buttons
                 if (is_mouse_hover(xMouse, yMouse, get_text_rectangle(&newGame_Text)))
                 {
                     set_menu_texture_small(get_text_rectangle(&newGame_Text), get_text_texture(&newGame_Text));
@@ -233,6 +234,7 @@ void new_game(Players *players, TTF_Font *font, TTF_Font *main_font, SDL_Context
         player_count = 0;
         for (int i = 0; i < 4; i++)
         {
+            // Animate the button, when mouse hovers it
             mouse_hover(xMouse, yMouse, get_icon_player_arrow_left(&icons[i]));
             mouse_hover(xMouse, yMouse, get_icon_player_arrow_right(&icons[i]));
             mouse_hover(xMouse, yMouse, get_icon_icon_arrow_left(&icons[i]));
@@ -506,11 +508,6 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
 
     SDL_Color RGB_WHITE = {255, 255, 255};
 
-    // Text main_Text;
-    // init_Text(&main_Text, RGB_WHITE, main_font, main_text, window);
-    // set_text_x(&main_Text, WINDOW_WIDTH / 2 - get_text_w(&main_Text) / 2);
-    // set_text_y(&main_Text, (WINDOW_HEIGHT / 13));
-
     switch (player->color)
     {
     case RED:
@@ -580,7 +577,7 @@ void username_input_screen(SDL_Context *window, int *close_request, TTF_Font *fo
 
     while (quit == false)
     {
-        // SDL_RenderClear(window->renderer);
+        SDL_RenderClear(window->renderer);
 
         SDL_RenderCopy(window->renderer, background, NULL, &background_rect);
 
@@ -706,10 +703,6 @@ void set_menu_texture_small(SDL_Rect *rect, SDL_Texture *texture)
 void destroy_text(Text *text)
 {
     SDL_FreeSurface(get_text_surface(text));
-    // set_text_surface(text, NULL);
-    // SDL_DestroyTexture(get_text_texture(text));
-
-    // set_text_texture(text, NULL);
 }
 
 // SETTERS

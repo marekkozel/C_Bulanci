@@ -1,6 +1,5 @@
 #include "sounds.h"
 
-/* VARIABLES */
 static SDL_AudioDeviceID _audioDeviceId = 0;
 static Uint8 *_audioBuffer = NULL;
 static Uint32 _audioLength = 0;
@@ -75,5 +74,4 @@ void stop_audio()
 static void clean_up()
 {
     SDL_CloseAudioDevice(_audioDeviceId);
-    // SDL_FreeWAV(_audioBuffer);
 }

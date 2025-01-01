@@ -1,9 +1,12 @@
 # CUBES BATTLES
 ## VSB project - Bulanci
 
-
 Cube battles is a student-written game in C, created to meet the requirements of the UPR project assignment. We were presented with a game [Bulánky](https://www.bulanci.cz/) as a template. You fight as a Cube
 against another Cubes, and battle about the best score.
+
+<video width="854" height="480" controls>
+  <source src="./docs/Cubes_battle_video.mp4" type="video/mp4">
+</video>
 
 ## Building the project
 

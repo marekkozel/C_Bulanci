@@ -28,7 +28,7 @@ int main()
     srand(time(NULL));
 
     // how long should this game be:
-    int sec = 90;
+    int sec = 10;
 
     int m = 0;
     int s = 0;
@@ -51,7 +51,7 @@ int main()
     Players players;
     init_players(&players);
 
-    char player_path[500] = "../Assets/Player/";
+    char player_path[100] = "../Assets/Player/";
 
     // Font
     TTF_Init();
@@ -66,7 +66,7 @@ int main()
     SDL_Color RGB_WHITE = {255, 255, 255};
 
     // Main menu
-    play_sound();
+    play_sound(); // Play background music
     start_main_menu(&players, &window, close_request, font, main_font);
 
     // World section
@@ -90,8 +90,8 @@ int main()
     dynarray projectils;
     init_projectils(&projectils);
 
-    SDL_Surface *score_surface;
-    SDL_Texture *score_texture;
+    SDL_Surface *score_surface = NULL;
+    SDL_Texture *score_texture = NULL;
 
     SDL_Surface *time_surface = TTF_RenderText_Solid(font, time_text, RGB_WHITE);
     SDL_Texture *time_texture = SDL_CreateTextureFromSurface(window.renderer, time_surface);
@@ -101,6 +101,7 @@ int main()
         SDL_RenderClear(window.renderer);
         SDL_RenderCopy(window.renderer, background_text, NULL, &background_rect);
 
+        // start every second
         if (round(miliseconds_time) - 1 == seconds_timer)
         {
 
@@ -118,6 +119,7 @@ int main()
             time_surface = TTF_RenderText_Solid(font, time_text, RGB_WHITE);
             time_texture = SDL_CreateTextureFromSurface(window.renderer, time_surface);
 
+            // End of the game, the best score is evaluated
             if (sec - seconds_timer + 2 <= 0)
             {
                 int max_score_index = 0;
@@ -145,13 +147,13 @@ int main()
             }
         }
 
+        // Delta time calculations
         LAST = NOW;
         NOW = SDL_GetPerformanceCounter();
-
         uint32_t startTime = SDL_GetTicks();
-
         deltaTime = (double)((NOW - LAST) / (double)SDL_GetPerformanceFrequency());
 
+        // read input from player
         read_keys(close_request, &window, &players, &projectils, miliseconds_time);
 
         // Obstacles render

@@ -3,7 +3,7 @@
 
 void set_obstacles(Obstacles *obstacles, SDL_Context *window)
 {
-
+    // Set every obstacle
     init_obstacle(window, obstacles, 1, "../Assets/Obstacles/long_pit_obstacle.png", 1150, 338);
     init_obstacle(window, obstacles, 1, "../Assets/Obstacles/pit_obstacle.png", 1300, 178);
     init_obstacle(window, obstacles, 0, "../Assets/Obstacles/thick_block_obstacle.png", 500, 800);

@@ -38,6 +38,8 @@ void init_player(Player *player, SDL_Context *window, int id, char path[100], Co
     SDL_QueryTexture(player->texture, NULL, NULL, &dest->w, &dest->h);
     dest->w *= 5;
     dest->h *= 5;
+
+    // Cordinates to spawn each player in each corner of the map
     switch (id)
     {
     case 0:
@@ -66,14 +68,17 @@ void init_player(Player *player, SDL_Context *window, int id, char path[100], Co
 
 void move_player(Player *player, double delta_time, Players *players, Obstacles *obstacles, dynarray *power_ups, dynarray *projectils, SDL_Context *window, double time)
 {
+    // Respawn player after 3 seconds, if he is dead
     int respawn_timer = 3;
     if (get_player_dead_time(player) + respawn_timer < time && get_player_heath(player) <= 0)
     {
         respawn_player(players, player, obstacles);
     }
 
+    // Cooldown of the power up
     check_power_up_time(player, time);
 
+    // Allows player to move
     set_player_multiplier_x(player, 1);
     set_player_multiplier_y(player, 1);
 
@@ -127,6 +132,7 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
     int can_spawn = 1;
     while (can_spawn)
     {
+        // spawn player in empty space
         SDL_QueryTexture(player->texture, NULL, NULL, &dest->w, &dest->h);
         dest->w *= 5;
         dest->h *= 5;
@@ -135,6 +141,7 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
 
         can_spawn = 0;
 
+        // check for obstacles collisions
         for (int i = 0; i < obsatcles->count_obstacles; i++)
         {
             if (SDL_HasIntersection(dest, obsatcles->obstacles[i].rectangle))
@@ -143,6 +150,8 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
                 break;
             }
         }
+
+        // check for player collisions
         for (int i = 0; i < players->count_players; i++)
         {
             if (SDL_HasIntersection(dest, &players->players[i].rectangle))
@@ -159,6 +168,7 @@ void respawn_player(Players *players, Player *player, Obstacles *obsatcles)
 
 void animate_player(Player *player, SDL_Context *window, char *path)
 {
+    // set player texture, to direction he is looking, and add shading
     if (get_player_texture(player) != NULL)
     {
         SDL_DestroyTexture(get_player_texture(player));

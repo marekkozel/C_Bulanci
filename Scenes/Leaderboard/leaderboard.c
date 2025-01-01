@@ -31,12 +31,13 @@ Data *read_from_leaderboard(int *row_count)
     return data;
 }
 
+// Find size of file
 int fsize(FILE *fp)
 {
     int prev = ftell(fp);
     fseek(fp, 0L, SEEK_END);
     int sz = ftell(fp);
-    fseek(fp, prev, SEEK_SET); // go back to where we were
+    fseek(fp, prev, SEEK_SET);
     return sz;
 }
 
@@ -51,7 +52,7 @@ Data *best_score_sorted(int *row_count)
     return all_data;
 }
 
-// perform the bubble sort
+// Perform the bubble sort
 void bubbleSort(Data *data, int size)
 {
     // loop to access each array element

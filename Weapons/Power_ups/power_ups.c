@@ -30,6 +30,7 @@ void init_power_up(dynarray *power_ups, SDL_Context *window, int id, int x, int 
 
 void spawn_power_up(dynarray *power_ups, SDL_Context *window, int timer)
 {
+    // every 5 seconds spawn power up at the random corner
     if (timer % 5 == 0)
     {
 
@@ -67,8 +68,10 @@ void spawn_power_up(dynarray *power_ups, SDL_Context *window, int timer)
         }
     }
 }
+
 void power_up_collision(Power_up *power_up, dynarray *power_ups)
 {
+    // Delete power up, which is under the new spawned power up
     for (int i = 0; i < power_ups->size; i++)
     {
         Power_up *another_power_up;
@@ -80,6 +83,7 @@ void power_up_collision(Power_up *power_up, dynarray *power_ups)
         }
     }
 }
+
 //-----------------------------------
 // Setters
 
